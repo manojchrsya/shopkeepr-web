@@ -4,7 +4,9 @@
       <v-card class="mx-auto px-0">
         <v-toolbar color="cyan">
           <v-btn icon href="/customers">
-            <v-icon color="black lighten-1">mdi-close</v-icon>
+            <v-icon color="black lighten-1">
+              mdi-close
+            </v-icon>
           </v-btn>
           <v-toolbar-title>Manoj's Detail</v-toolbar-title>
         </v-toolbar>
@@ -48,7 +50,9 @@
         </v-card-actions>
         <v-card-actions class="pt-0">
           <v-flex class="py-0" xs12>
-            <v-btn color="success" block dark>Pay Now</v-btn>
+            <v-btn color="success" block dark>
+              Pay Now
+            </v-btn>
           </v-flex>
         </v-card-actions>
       </v-card>
@@ -93,7 +97,9 @@
         </v-col>
       </v-row>
       <v-card>
-        <v-card-subtitle class="font-weight-bold">Last transactions</v-card-subtitle>
+        <v-card-subtitle class="font-weight-bold">
+          Last transactions
+        </v-card-subtitle>
         <v-divider />
         <v-list>
           <template v-for="(item, index) in items">
