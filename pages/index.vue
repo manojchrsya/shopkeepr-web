@@ -80,6 +80,8 @@
               ['color', ['#59d955', '#ff4a37']],
               ['legend.show', true],
               ['xAxis.axisLabel.show', true],
+              ['xAxis.type', 'value'],
+              ['yAxis.type', 'category'],
               ['yAxis.axisLabel.show', true],
               ['yAxis.axisTick', false],
               ['grid.left', '2%'],
@@ -101,7 +103,7 @@
 
 <script>
 import EChart from '@/components/chart/echart'
-
+import 'echarts/lib/component/legend'
 export default {
   components: {
     EChart
