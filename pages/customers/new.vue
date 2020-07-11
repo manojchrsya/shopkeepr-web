@@ -29,6 +29,7 @@
               solo
             />
           </v-flex>
+          <v-spacer />
           <v-flex class="py-0" xs12>
             <v-textarea
               placeholder="Other information"

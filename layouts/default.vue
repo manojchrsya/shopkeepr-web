@@ -19,7 +19,7 @@
           <span>Transactions</span>
           <v-icon>mdi-currency-inr</v-icon>
         </v-btn>
-        <v-btn>
+        <v-btn href="/profile">
           <span>Profile</span>
           <v-icon>mdi-account</v-icon>
         </v-btn>

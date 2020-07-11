@@ -26,28 +26,40 @@
             />
           </v-list-item-avatar>
         </v-list-item>
-        <v-card-actions class="pb-0">
-          <v-flex class="py-0" xs7>
-            <v-text-field
-              label="Amount"
-              solo
-              append-icon="mdi-currency-inr"
-              dense
+        <v-card-text>
+          <v-layout>
+            <v-flex class="py-0" xs6>
+              <v-text-field
+                label="Amount"
+                solo
+                append-icon="mdi-currency-inr"
+                dense
+                single-line
+              />
+            </v-flex>
+            <v-spacer />
+            <v-flex class="py-0" xs5>
+              <v-select
+                single-line
+                dense
+                value="Credit"
+                :items="paymentOptions"
+                label="Payment Type"
+                solo
+              />
+            </v-flex>
+          </v-layout>
+          <v-flex class="py-0" xs12>
+            <v-textarea
+              value=""
+              placeholder="Other details with comma seperated..."
+              append-icon="mdi-information"
               single-line
+              dense
+              solo
             />
           </v-flex>
-          <v-spacer />
-          <v-flex class="py-0" xs4>
-            <v-select
-              single-line
-              dense
-              value="Credit"
-              :items="paymentOptions"
-              label="Payment Type"
-              solo
-            />
-          </v-flex>
-        </v-card-actions>
+        </v-card-text>
         <v-card-actions class="pt-0">
           <v-flex class="py-0" xs12>
             <v-btn color="success" block dark>
