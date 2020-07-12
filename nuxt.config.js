@@ -5,12 +5,8 @@ export default {
   ** Nuxt rendering mode
   ** See https://nuxtjs.org/api/configuration-mode
   */
-  mode: 'universal',
-  /*
-  ** Nuxt target
-  ** See https://nuxtjs.org/api/configuration-target
-  */
-  target: 'server',
+  mode: 'spa',
+  loading: { color: '#1f88e5' },
   /*
   ** Headers of the page
   ** See https://nuxtjs.org/api/configuration-head
