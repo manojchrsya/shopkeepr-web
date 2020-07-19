@@ -15,6 +15,7 @@
                 <v-layout>
                   <v-flex class="py-0">
                     <v-text-field
+                      v-model="model.email"
                       label="Email"
                       solo
                       append-icon="mdi-email"
@@ -22,6 +23,7 @@
                       single-line
                     />
                     <v-text-field
+                      v-model="model.password"
                       label="Password"
                       solo
                       type="password"
@@ -35,7 +37,7 @@
               <v-card-actions class="pt-0">
                 <v-spacer />
                 <v-flex class="py-0" xs6>
-                  <v-btn color="success" class="rounded-xl" block dark>
+                  <v-btn color="success" class="rounded-xl" block dark @onclick="login">
                     Login
                     <v-icon right dark>
                       mdi-arrow-right
@@ -59,11 +61,49 @@
 </template>
 
 <script>
+import _ from 'lodash'
+import {
+  required
+} from 'vuelidate/lib/validators'
 
 export default {
   layout: 'clean',
   data: () => ({
-    paymentOptions: ['Credit', 'Debit']
-  })
+    model: {
+      email: '',
+      password: ''
+    }
+  }),
+  methods: {
+    async login () {
+      this.$v.$touch()
+      // eslint-disable-next-line
+      console.log('i am gereregeeg')
+      if (!this.$v.model.email.$invalid) {
+        const [error] = await this.$api.login({
+          email: this.model.email,
+          password: this.model.password
+        })
+        if (!error) {
+          const { roles } = this.$auth.$state.user
+          if (roles && _.first(roles) && _.first(roles).defaultRoute) {
+            window.location.href = _.first(roles).defaultRoute
+          } else {
+            window.location.href = '/dashboard'
+          }
+        }
+      }
+    }
+  },
+  validations: {
+    model: {
+      email: {
+        required
+      },
+      password: {
+        required
+      }
+    }
+  }
 }
 </script>

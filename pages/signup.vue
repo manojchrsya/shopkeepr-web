@@ -80,12 +80,38 @@
 </template>
 
 <script>
+import _ from 'lodash'
+// import {
+//   required, numeric, minLength, maxLength,
+// } from 'vuelidate/lib/validators'
 
 export default {
   layout: 'clean',
   auth: 'guest',
   data: () => ({
-    paymentOptions: ['Credit', 'Debit']
-  })
+    model: {
+      email: '',
+      password: ''
+    }
+  }),
+  methods: {
+    async login () {
+      this.$v.$touch()
+      if (!this.$v.model.email.$invalid) {
+        const [error] = await this.$api.login({
+          email: this.model.email,
+          password: this.model.password
+        })
+        if (!error) {
+          const { roles } = this.$auth.$state.user
+          if (roles && _.first(roles) && _.first(roles).defaultRoute) {
+            window.location.href = _.first(roles).defaultRoute
+          } else {
+            window.location.href = '/dashboard'
+          }
+        }
+      }
+    }
+  }
 }
 </script>
