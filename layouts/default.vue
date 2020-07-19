@@ -7,7 +7,7 @@
     </v-main>
     <v-footer class="px-0 py-0">
       <v-bottom-navigation v-model="bottomNav" grow light fixed app>
-        <v-btn href="/">
+        <v-btn href="/dashboard">
           <span>Dashboard</span>
           <v-icon>mdi-view-dashboard</v-icon>
         </v-btn>

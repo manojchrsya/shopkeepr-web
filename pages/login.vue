@@ -37,7 +37,9 @@
                 <v-flex class="py-0" xs6>
                   <v-btn color="success" class="rounded-xl" block dark>
                     Login
-                    <v-icon right dark>mdi-arrow-right</v-icon>
+                    <v-icon right dark>
+                      mdi-arrow-right
+                    </v-icon>
                   </v-btn>
                 </v-flex>
               </v-card-actions>

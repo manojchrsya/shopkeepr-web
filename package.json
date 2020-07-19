@@ -13,10 +13,15 @@
     "lint-fix": "eslint --ext .js,.vue --fix"
   },
   "dependencies": {
+    "@nuxtjs/auth": "^4.9.1",
     "@nuxtjs/axios": "^5.11.0",
+    "@nuxtjs/dotenv": "^1.4.1",
+    "@nuxtjs/moment": "^1.6.1",
+    "@nuxtjs/toast": "^3.3.1",
     "echarts": "^4.8.0",
     "lodash": "^4.17.15",
-    "nuxt": "^2.13.0"
+    "nuxt": "^2.13.0",
+    "vuelidate": "^0.7.5"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config": "^3.0.0",

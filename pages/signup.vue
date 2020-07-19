@@ -58,7 +58,9 @@
                 <v-flex class="py-0" xs6>
                   <v-btn color="success" class="rounded-xl" block dark>
                     Sign Up
-                    <v-icon right dark>mdi-arrow-right</v-icon>
+                    <v-icon right dark>
+                      mdi-arrow-right
+                    </v-icon>
                   </v-btn>
                 </v-flex>
               </v-card-actions>
@@ -81,6 +83,7 @@
 
 export default {
   layout: 'clean',
+  auth: 'guest',
   data: () => ({
     paymentOptions: ['Credit', 'Debit']
   })

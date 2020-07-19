@@ -33,6 +33,10 @@ export default {
   ** https://nuxtjs.org/guide/plugins
   */
   plugins: [
+    '@/plugins/vuetify',
+    '@/plugins/vuelidate',
+    '@/plugins/axios',
+    '@/plugins/api'
   ],
   /*
   ** Auto import components
@@ -51,14 +55,50 @@ export default {
   ** Nuxt.js modules
   */
   modules: [
-    // Doc: https://axios.nuxtjs.org/usage
-    '@nuxtjs/axios'
+    // Doc: https://github.com/nuxt-community/axios-module#usage
+    '@nuxtjs/axios',
+    '@nuxtjs/toast',
+    '@nuxtjs/auth',
+    '~/modules/routes',
+    '@nuxtjs/dotenv',
+    '@nuxtjs/moment'
   ],
   /*
   ** Axios module configuration
   ** See https://axios.nuxtjs.org/options
   */
-  axios: {},
+  axios: {
+    baseURL: process.env.API_URL
+  },
+
+  auth: {
+    strategies: {
+      local: {
+        endpoints: {
+          login: { url: '/SkUsers/Login', method: 'post', propertyName: 'token.id' },
+          logout: { url: '/SkUsers/Logout', method: 'post' },
+          user: { url: '/SkUsers/findOne?filter[include]=roles', method: 'get', propertyName: false }
+        },
+        tokenRequired: true,
+        tokenType: null
+      }
+    },
+    plugins: [
+      '~/plugins/config'
+    ],
+    redirect: {
+      home: '/dashboard',
+      logout: '/login'
+    }
+  },
+  router: {
+    middleware: ['auth']
+  },
+  toast: {
+    iconPack: 'material',
+    theme: 'primary',
+    duration: 5000
+  },
   /*
   ** vuetify module configuration
   ** https://github.com/nuxt-community/vuetify-module
