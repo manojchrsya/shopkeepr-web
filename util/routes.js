@@ -1,7 +1,8 @@
 const Profile = () => import('~/pages/profile').then(m => m.default || m)
 const ListCustomer = () => import('~/pages/customers').then(m => m.default || m)
 const CustomerDetail = () => import('~/pages/customers/detail').then(m => m.default || m)
-const AddCustomer = () => import('~/pages/customers/new').then(m => m.default || m)
+const AddCustomer = () => import('~/pages/customers/add').then(m => m.default || m)
+const Transactions = () => import('~/pages/transactions').then(m => m.default || m)
 
 export default [
   {
@@ -23,5 +24,10 @@ export default [
     name: 'customers/add',
     path: '/customers/add',
     component: AddCustomer
+  },
+  {
+    name: 'transactions',
+    path: '/transactions',
+    component: Transactions
   }
 ]

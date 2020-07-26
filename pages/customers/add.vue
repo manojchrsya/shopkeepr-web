@@ -3,9 +3,9 @@
     <v-flex>
       <v-card class="mx-auto px-0">
         <v-toolbar color="cyan">
-          <v-btn icon href="/customers">
+          <v-btn icon href="/customers/list">
             <v-icon color="black lighten-1">
-              mdi-less-than
+              mdi-close
             </v-icon>
           </v-btn>
           <v-toolbar-title>Add New Customer</v-toolbar-title>

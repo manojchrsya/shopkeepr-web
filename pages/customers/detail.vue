@@ -3,7 +3,7 @@
     <v-flex>
       <v-card class="mx-auto px-0">
         <v-toolbar color="cyan">
-          <v-btn icon href="/customers">
+          <v-btn icon href="/customers/list">
             <v-icon color="black lighten-1">
               mdi-close
             </v-icon>

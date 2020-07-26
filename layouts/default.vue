@@ -11,7 +11,7 @@
           <span>Dashboard</span>
           <v-icon>mdi-view-dashboard</v-icon>
         </v-btn>
-        <v-btn href="/customers">
+        <v-btn href="/customers/list">
           <span>Customer</span>
           <v-icon>mdi-account-box-multiple</v-icon>
         </v-btn>

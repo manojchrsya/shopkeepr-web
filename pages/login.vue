@@ -21,6 +21,7 @@
                       append-icon="mdi-email"
                       dense
                       single-line
+                      :error-messages="emailErrors"
                     />
                     <v-text-field
                       v-model="model.password"
@@ -30,6 +31,7 @@
                       append-icon="mdi-lock"
                       dense
                       single-line
+                      :error-messages="passwordErrors"
                     />
                   </v-flex>
                 </v-layout>
@@ -37,7 +39,7 @@
               <v-card-actions class="pt-0">
                 <v-spacer />
                 <v-flex class="py-0" xs6>
-                  <v-btn color="success" class="rounded-xl" block dark @onclick="login">
+                  <v-btn color="success" class="rounded-xl" block dark @click="login">
                     Login
                     <v-icon right dark>
                       mdi-arrow-right
@@ -63,7 +65,7 @@
 <script>
 import _ from 'lodash'
 import {
-  required
+  required, email
 } from 'vuelidate/lib/validators'
 
 export default {
@@ -74,11 +76,24 @@ export default {
       password: ''
     }
   }),
+  computed: {
+    emailErrors () {
+      const errors = []
+      if (!this.$v.model.email.$dirty) { return errors }
+      if (!this.$v.model.email.required) { errors.push('Email is required.') }
+      if (!this.$v.model.email.email) { errors.push('Invalid Email.') }
+      return errors
+    },
+    passwordErrors () {
+      const errors = []
+      if (!this.$v.model.password.$dirty) { return errors }
+      if (!this.$v.model.password.required) { errors.push('Password is required.') }
+      return errors
+    }
+  },
   methods: {
     async login () {
       this.$v.$touch()
-      // eslint-disable-next-line
-      console.log('i am gereregeeg')
       if (!this.$v.model.email.$invalid) {
         const [error] = await this.$api.login({
           email: this.model.email,
@@ -98,7 +113,8 @@ export default {
   validations: {
     model: {
       email: {
-        required
+        required,
+        email
       },
       password: {
         required

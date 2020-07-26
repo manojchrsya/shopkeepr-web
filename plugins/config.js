@@ -19,13 +19,13 @@ export default async function ({ app }) {
     // set scope in storage
     app.$auth.$storage.setState('scope', role)
     // set config in auth storage
-    const configUrl = '/ShopKeepers/getWorkshopConfig'
+    const configUrl = '/ShopKeepers/getShopConfig'
     const query = {
       fields: ['displayName', 'id']
     }
     const [configuration, shop] = await Promise.all([
       app.$axios.get(configUrl),
-      app.$axios.get('/Workshops', { query })
+      app.$axios.get('/ShopKeepers', { query })
     ])
     if (configuration && shop) {
       app.$auth.$storage.setState('config', configuration.data)

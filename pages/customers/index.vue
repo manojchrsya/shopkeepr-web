@@ -42,7 +42,7 @@
           <v-list-item style="position: relative">
             <v-spacer />
             <v-btn
-              href="/customers/new"
+              href="/customers/add"
               dark
               bottom
               right

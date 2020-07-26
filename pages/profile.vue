@@ -61,6 +61,18 @@
             </v-list-item-content>
           </v-list-item>
         </v-list>
+        <v-divider />
+        <v-list subheader>
+          <v-subheader>
+            <strong>Logout</strong>
+            <v-spacer />
+            <v-btn icon @click="$auth.logout()">
+              <v-icon color="black lighten-1">
+                mdi-logout
+              </v-icon>
+            </v-btn>
+          </v-subheader>
+        </v-list>
       </v-card>
     </v-flex>
   </v-layout>
