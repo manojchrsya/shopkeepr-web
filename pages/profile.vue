@@ -24,7 +24,7 @@
               </v-badge>
               <v-list-item>
                 <v-list-item-content>
-                  <v-list-item-title>Mr. Manoj Chaurasiya</v-list-item-title>
+                  <v-list-item-title>{{ $auth.user.name }}</v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
             </v-col>
@@ -36,13 +36,13 @@
           <v-subheader><strong>Business Details</strong></v-subheader>
           <v-divider />
           <v-list-item
-            v-for="item in items"
-            :key="item.title"
+            v-for="(value, key) in business"
+            :key="key"
             height="5"
           >
             <v-list-item-content class="py-0">
-              <v-list-item-subtitle v-text="item.title" />
-              <v-list-item-subtitle v-text="item.data" />
+              <v-list-item-subtitle v-text="key" />
+              <v-list-item-subtitle v-text="value" />
             </v-list-item-content>
           </v-list-item>
         </v-list>
@@ -51,13 +51,13 @@
           <v-subheader><strong>Customer Details</strong></v-subheader>
           <v-divider />
           <v-list-item
-            v-for="detail in customer"
-            :key="detail.title"
+            v-for="(value, key) in customer"
+            :key="key"
             height="5"
           >
             <v-list-item-content class="py-0">
-              <v-list-item-subtitle v-text="detail.title" />
-              <v-list-item-subtitle v-text="detail.data" />
+              <v-list-item-subtitle v-text="key" />
+              <v-list-item-subtitle v-text="value" />
             </v-list-item-content>
           </v-list-item>
         </v-list>
@@ -79,21 +79,30 @@
 </template>
 
 <script>
+const _ = require('lodash')
 
 export default {
   data: () => ({
-    paymentOptions: ['Credit', 'Debit'],
-    items: [
-      { title: 'Name', data: 'My New business' },
-      { title: 'Mobile', data: '9987498273' },
-      { title: 'GST Number', data: '1MHG2212121A121212' },
-      { title: 'Pan Card', data: 'AKYPC4618C' }
-    ],
-    customer: [
-      { title: 'Name', data: 'Manoj chaurasiya' },
-      { title: 'Mobile', data: '9987498273' },
-      { title: 'Email', data: 'manojchrsya@gmail.com' }
-    ]
-  })
+    paymentOptions: ['Credit', 'Debit']
+  }),
+  computed: {
+    business () {
+      const details = _.first(this.$auth.state.shop) || {}
+      return {
+        Name: details.displayName,
+        Mobile: details.mobile,
+        'GST Number': details.gstNumber || '-',
+        'Pan Card': details.pancard || '-'
+      }
+    },
+    customer () {
+      const details = this.$auth.user
+      return {
+        Name: details.name,
+        Mobile: details.mobile,
+        Email: details.email
+      }
+    }
+  }
 }
 </script>
