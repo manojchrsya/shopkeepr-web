@@ -15,9 +15,9 @@
         </v-toolbar>
 
         <v-list two-line>
-          <template v-for="(item, index) in items">
+          <template v-for="(item, index) in customers">
             <v-list-item
-              :key="item.title"
+              :key="item.id"
               href="/customers/detail"
             >
               <v-list-item-avatar>
@@ -25,19 +25,19 @@
               </v-list-item-avatar>
 
               <v-list-item-content>
-                <v-list-item-title :key="index" v-text="item.title" />
-                <v-list-item-subtitle v-text="item.subtitle" />
+                <v-list-item-title :key="index" v-text="item.name" />
+                <v-list-item-subtitle v-text="item.mobile || '-'" />
               </v-list-item-content>
 
               <v-list-item-action>
-                <v-btn icon>
+                <v-btn icon :to="'/customers/add?id='+item.id">
                   <v-icon color="grey lighten-1">
                     mdi-details
                   </v-icon>
                 </v-btn>
               </v-list-item-action>
             </v-list-item>
-            <v-divider v-if="index !== (items.length - 1)" :key="index" />
+            <v-divider v-if="index !== (customers.length - 1)" :key="index" />
           </template>
           <v-list-item style="position: relative">
             <v-spacer />
@@ -63,18 +63,16 @@
 <script>
 
 export default {
+  async asyncData ({ app }) {
+    const [error, response] = await app.$api.get('Customers')
+    if (!error) {
+      return {
+        customers: response.data
+      }
+    }
+  },
   data: () => ({
-    items: [
-      { profilePic: 'https://cdn.vuetifyjs.com/images/lists/1.jpg', title: 'Manoj Chaurasiya', subtitle: '9987492873' },
-      { profilePic: 'https://cdn.vuetifyjs.com/images/lists/2.jpg', title: 'Ramkisan Prajapti', subtitle: '989898998' },
-      { profilePic: 'https://cdn.vuetifyjs.com/images/lists/3.jpg', title: 'Bhim Sharma', subtitle: '989898989' },
-      { profilePic: 'https://cdn.vuetifyjs.com/images/lists/1.jpg', title: 'Manoj Chaurasiya', subtitle: '9987492873' },
-      { profilePic: 'https://cdn.vuetifyjs.com/images/lists/2.jpg', title: 'Ramkisan Prajapti', subtitle: '989898998' },
-      { profilePic: 'https://cdn.vuetifyjs.com/images/lists/3.jpg', title: 'Bhim Sharma', subtitle: '989898989' },
-      { profilePic: 'https://cdn.vuetifyjs.com/images/lists/1.jpg', title: 'Manoj Chaurasiya', subtitle: '9987492873' },
-      { profilePic: 'https://cdn.vuetifyjs.com/images/lists/2.jpg', title: 'Ramkisan Prajapti', subtitle: '989898998' },
-      { profilePic: 'https://cdn.vuetifyjs.com/images/lists/3.jpg', title: 'Bhim Sharma', subtitle: '989898989' }
-    ]
+    customers: []
   })
 }
 </script>
