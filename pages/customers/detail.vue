@@ -20,10 +20,9 @@
             </v-list-item-title>
           </v-list-item-content>
           <v-list-item-avatar class="mt-5" color="grey darken-3">
-            <v-img
-              class="elevation-6"
-              src="https://avataaars.io/?avatarStyle=Transparent&topType=ShortHairShortCurly&accessoriesType=Prescription02&hairColor=Black&facialHairType=Blank&clotheType=Hoodie&clotheColor=White&eyeType=Default&eyebrowType=DefaultNatural&mouthType=Default&skinColor=Light"
-            />
+            <v-avatar color="teal">
+              <span class="white--text">CM</span>
+            </v-avatar>
           </v-list-item-avatar>
         </v-list-item>
         <v-card-text>

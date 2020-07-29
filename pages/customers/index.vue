@@ -2,10 +2,11 @@
 <template>
   <v-layout row wrap align-center>
     <v-flex>
-      <v-card class="mx-auto px-0">
+      <v-card flat class="mx-auto px-0">
         <v-toolbar color="cyan">
           <v-flex class="mt-7" xs12>
             <v-text-field
+              v-model="search"
               append-icon="mdi-magnify"
               solo="solo"
               label="Search customer and mobile no"
@@ -15,13 +16,15 @@
         </v-toolbar>
 
         <v-list two-line>
-          <template v-for="(item, index) in customers">
+          <template v-for="(item, index) in filterCustomers">
             <v-list-item
               :key="item.id"
               href="/customers/detail"
             >
               <v-list-item-avatar>
-                <v-img :src="item.profilePic" />
+                <v-avatar color="teal">
+                  <span class="white--text" v-text="$globals.customerInitial(item.name)" />
+                </v-avatar>
               </v-list-item-avatar>
 
               <v-list-item-content>
@@ -32,14 +35,17 @@
               <v-list-item-action>
                 <v-btn icon :to="'/customers/add?id='+item.id">
                   <v-icon color="grey lighten-1">
-                    mdi-details
+                    mdi-pencil
                   </v-icon>
                 </v-btn>
               </v-list-item-action>
             </v-list-item>
-            <v-divider v-if="index !== (customers.length - 1)" :key="index" />
+            <v-divider v-if="index !== customers.length" :key="index" />
           </template>
           <v-list-item style="position: relative">
+            <v-list-item-content v-if="filterCustomers.length === 0">
+              <v-list-item-title>No Customer found.</v-list-item-title>
+            </v-list-item-content>
             <v-spacer />
             <v-btn
               href="/customers/add"
@@ -72,7 +78,20 @@ export default {
     }
   },
   data: () => ({
-    customers: []
-  })
+    customers: [],
+    search: ''
+  }),
+  computed: {
+    filterCustomers () {
+      const customers = []
+      const search = this.search.toLowerCase()
+      this.customers.forEach((customer) => {
+        if (customer.name.toLowerCase().includes(search) || customer.mobile.toLowerCase().includes(search)) {
+          customers.push(customer)
+        }
+      })
+      return search !== '' ? customers : this.customers
+    }
+  }
 }
 </script>

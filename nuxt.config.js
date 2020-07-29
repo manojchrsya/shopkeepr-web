@@ -36,7 +36,8 @@ export default {
     '@/plugins/vuetify',
     '@/plugins/vuelidate',
     '@/plugins/axios',
-    '@/plugins/api'
+    '@/plugins/api',
+    '@/plugins/globals'
   ],
   /*
   ** Auto import components
