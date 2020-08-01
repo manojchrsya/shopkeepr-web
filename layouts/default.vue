@@ -29,19 +29,19 @@
     </v-main>
     <v-footer class="px-0 py-0">
       <v-bottom-navigation v-model="bottomNav" grow light fixed app>
-        <v-btn href="/dashboard">
+        <v-btn :to="'/dashboard'">
           <span>Dashboard</span>
           <v-icon>mdi-view-dashboard</v-icon>
         </v-btn>
-        <v-btn href="/customers/list">
+        <v-btn :to="'/customers/list'">
           <span>Customer</span>
           <v-icon>mdi-account-box-multiple</v-icon>
         </v-btn>
-        <v-btn href="/transactions">
+        <v-btn :to="'/transactions'">
           <span>Transactions</span>
           <v-icon>mdi-currency-inr</v-icon>
         </v-btn>
-        <v-btn href="/profile">
+        <v-btn :to="'/profile'">
           <span>Profile</span>
           <v-icon>mdi-account</v-icon>
         </v-btn>

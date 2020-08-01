@@ -19,7 +19,7 @@
           <template v-for="(item, index) in filterCustomers">
             <v-list-item
               :key="item.id"
-              href="/customers/detail"
+              :to="'/customers/detail?id='+item.id"
             >
               <v-list-item-avatar>
                 <v-avatar color="teal">
@@ -43,12 +43,14 @@
             <v-divider v-if="index !== customers.length" :key="index" />
           </template>
           <v-list-item style="position: relative">
-            <v-list-item-content v-if="filterCustomers.length === 0">
-              <v-list-item-title>No Customer found.</v-list-item-title>
+            <v-list-item-content v-if="filterCustomers.length === 0" style="text-align:center;">
+              <v-list-item-title>
+                No Customer found.
+              </v-list-item-title>
             </v-list-item-content>
             <v-spacer />
             <v-btn
-              href="/customers/add"
+              :to="'/customers/add'"
               dark
               bottom
               right
@@ -70,7 +72,7 @@
 
 export default {
   async asyncData ({ app }) {
-    const [error, response] = await app.$api.get('Customers')
+    const [error, response] = await app.$api.get('Customers', { params: { filter: { order: 'createdOn desc' } } })
     if (!error) {
       return {
         customers: response.data

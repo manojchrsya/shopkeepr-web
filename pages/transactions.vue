@@ -23,13 +23,13 @@
                 v-on="on"
               />
             </template>
-            <v-date-picker v-model="date" @input="menu2 = false" />
+            <v-date-picker v-model="date" :max="maxAllowedDate" @input="menu2 = false" @change="getTxnDetail" />
           </v-menu>
         </v-list-item>
         <v-card-text class="py-0">
           <e-chart
             :path-option="[
-              ['dataset.source', locationData],
+              ['dataset.source', transactionData],
               ['legend.show', true],
               ['legend.orient', 'horizontal'],
               ['legend.left', 'left'],
@@ -53,7 +53,7 @@
               <v-list-item-content>
                 <v-list-item-subtitle>Credit</v-list-item-subtitle>
                 <v-list-item-title class="font-weight-bold mt-1">
-                  1,50,00,00 <v-icon small class="mb-1">
+                  {{ $globals.formatNumber(summary.credit.total) }}  <v-icon small class="mb-1">
                     mdi-currency-inr
                   </v-icon>
                 </v-list-item-title>
@@ -72,7 +72,7 @@
               <v-list-item-content>
                 <v-list-item-subtitle> Debit </v-list-item-subtitle>
                 <v-list-item-title class="font-weight-bold mt-1">
-                  1,50,00,00 <v-icon small class="mb-1">
+                  {{ $globals.formatNumber(summary.debit.total) }} <v-icon small class="mb-1">
                     mdi-currency-inr
                   </v-icon>
                 </v-list-item-title>
@@ -87,41 +87,58 @@
         </v-col>
       </v-row>
       <v-card>
-        <v-card-subtitle class="font-weight-bold">
-          Transactions
-        </v-card-subtitle>
+        <v-list-item>
+          <v-list-item-content>
+            <v-list-item-subtitle>Transactions</v-list-item-subtitle>
+          </v-list-item-content>
+          <v-list-item-action>
+            <v-list-item-title class="font-weight-bold mt-1">
+              {{ $globals.formatNumber(summary.total) }} <v-icon small class="mb-1">
+                mdi-currency-inr
+              </v-icon>
+            </v-list-item-title>
+          </v-list-item-action>
+        </v-list-item>
         <v-divider />
-        <v-list>
-          <template v-for="(item, index) in items">
+        <v-list v-if="transactions.length > 0">
+          <template v-for="(txn, index) in transactions">
             <v-list-item
-              :key="item.index"
+              :key="txn.id"
             >
               <v-list-item-avatar>
-                <v-btn :color="item.color" fab x-small dark>
-                  <v-icon>{{ item.icon }}</v-icon>
+                <v-btn :color="txn.type === 'CREDIT' ? 'success': 'error'" fab x-small dark>
+                  <v-icon>{{ txn.type === 'CREDIT' ? 'mdi-arrow-top-right-thick': 'mdi-arrow-bottom-left-thick' }}</v-icon>
                 </v-btn>
               </v-list-item-avatar>
+
               <v-list-item-content>
-                <v-list-item-title v-text="item.title" />
+                <v-list-item-title v-text="txn.customer.name" />
                 <v-tooltip top>
                   <template v-slot:activator="{ on, attrs }">
-                    <v-list-item-subtitle v-bind="attrs" v-on="on" v-text="item.subtitle" />
+                    <v-list-item-subtitle v-bind="attrs" v-on="on" v-text="txn.remarks" />
                   </template>
-                  <span v-html="item.subtitle.split(',').join('<br>')" />
+                  <span v-html="txn.remarks.split(',').join('<br>')" />
                 </v-tooltip>
               </v-list-item-content>
 
-              <v-list-item-action class="pr-0">
+              <v-list-item-action>
                 <v-list-item-title class="font-weight-bold mt-1">
-                  {{ item.amount }} <v-icon small class="mb-1">
+                  {{ $globals.formatNumber(txn.amount) }} <v-icon small class="mb-1">
                     mdi-currency-inr
                   </v-icon>
                 </v-list-item-title>
               </v-list-item-action>
             </v-list-item>
-            <v-divider v-if="index !== (items.length - 1)" :key="index" />
+            <v-divider v-if="index !== (transactions.length - 1)" :key="index" />
           </template>
         </v-list>
+        <v-list-item v-else>
+          <v-list-item-content>
+            <v-list-item-title style="text-align:center;">
+              No Transactions found.
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
       </v-card>
     </v-flex>
   </v-layout>
@@ -135,48 +152,45 @@ export default {
     // eslint-disable-next-line vue/no-unused-components
     EChart
   },
+  async asyncData ({ app }) {
+    const result = {}
+    const [error, response] = await app.$api.get('ShopKeepers/getTxnDetails')
+    if (!error) {
+      result.transactions = response.data.transactions
+      result.summary = response.data.summary
+    }
+    return { ...result }
+  },
   data: () => ({
     menu2: false,
-    date: new Date().toISOString().substr(0, 10),
-    paymentOptions: ['Credit', 'Debit'],
-    items: [
-      { icon: 'mdi-arrow-top-right-thick', color: 'success', amount: '5,00,000', subtitle: '1 Paan, 2 mava, 1 goldflak, 1 Paan, 2 mava, 1 goldflak', title: 'Manoj Chaurasiya' },
-      { icon: 'mdi-arrow-bottom-left-thick', color: 'error', amount: '50,000', subtitle: '1 Hathi', title: 'Ramkisan Prajapati' },
-      { icon: 'mdi-arrow-bottom-left-thick', color: 'error', amount: '50', subtitle: '5 Rupa', title: 'Bhim Sharma' },
-      { icon: 'mdi-arrow-top-right-thick', color: 'success', amount: '50', subtitle: '4 Chuna, 4 Paan', title: 'Manoj Chaurasiya' },
-      { icon: 'mdi-arrow-bottom-left-thick', color: 'error', amount: '50', subtitle: '4 Chuna, 4 Paan', title: 'Ramkisan Prajapati' },
-      { icon: 'mdi-arrow-top-right-thick', color: 'success', amount: '50', subtitle: '4 Chuna, 4 Paan', title: 'Ramkisan Prajapati' },
-      { icon: 'mdi-arrow-top-right-thick', color: 'success', amount: '50', subtitle: '4 Chuna, 4 Paan', title: 'Ramkisan Prajapati' },
-      { icon: 'mdi-arrow-bottom-left-thick', color: 'error', amount: '50', subtitle: '4 Chuna, 4 Paan', title: 'Bhim Sharma' },
-      { icon: 'mdi-arrow-top-right-thick', color: 'success', amount: '50', subtitle: '4 Chuna, 4 Paan', title: 'Bhim Sharma' }
-    ],
-    locationData: [
-      {
-        value: 50,
-        name: 'Credit'
-      },
-      {
-        value: 35,
-        name: 'Debit'
-      }
-    ]
+    transactions: [],
+    summary: {},
+    date: new Date().toISOString().substr(0, 10)
   }),
   computed: {
-    siteTrafficData () {
-      const shortMonth = ['SU', 'MO', 'TU', 'WED', 'TH', 'FR', 'SA']
-      return shortMonth.map((m) => {
-        return {
-          month: m,
-          Credit: Math.floor(Math.random() * 1000) + 200,
-          Debit: Math.floor(Math.random() * 1000) + 250
+    transactionData () {
+      return [
+        {
+          value: this.summary.credit ? this.summary.credit.total : 0,
+          name: 'Credit'
+        },
+        {
+          value: this.summary.debit ? this.summary.debit.total : 0,
+          name: 'Debit'
         }
-      })
+      ]
+    },
+    maxAllowedDate () {
+      return this.$moment().format('YYYY-MM-DD')
     }
   },
   methods: {
-    dateSelected (dateEvent) {
-      // eslint-disable-next-line no-console
-      console.log(dateEvent)
+    async getTxnDetail (date) {
+      const [error, response] = await this.$api.get('ShopKeepers/getTxnDetails', { params: { options: { date } } })
+      if (!error) {
+        this.transactions = response.data.transactions
+        this.summary = response.data.summary
+      }
     }
   }
 }

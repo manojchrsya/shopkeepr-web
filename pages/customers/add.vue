@@ -3,13 +3,17 @@
     <v-flex>
       <v-card class="mx-auto px-0">
         <v-toolbar color="cyan">
-          <v-btn icon href="/customers/list">
+          <v-btn icon :to="'/customers/list'">
             <v-icon color="black lighten-1">
               mdi-close
             </v-icon>
           </v-btn>
-          <v-toolbar-title v-if="!id">Add New Customer</v-toolbar-title>
-          <v-toolbar-title v-else>Edit Customer</v-toolbar-title>
+          <v-toolbar-title v-if="!id">
+            Add New Customer
+          </v-toolbar-title>
+          <v-toolbar-title v-else>
+            Edit Customer
+          </v-toolbar-title>
         </v-toolbar>
         <v-card-text>
           <v-flex xs12>
