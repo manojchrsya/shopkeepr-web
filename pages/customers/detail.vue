@@ -173,7 +173,9 @@
         </v-list>
         <v-list-item v-else>
           <v-list-item-content>
-            <v-list-item-title style="text-align:center;">No Transactions found.</v-list-item-title>
+            <v-list-item-title style="text-align:center;">
+              No Transactions found.
+            </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-card>

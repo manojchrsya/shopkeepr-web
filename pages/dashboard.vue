@@ -6,31 +6,68 @@
           <v-list-item two-line>
             <v-list-item-content>
               <v-list-item-title class="headline">
-                Welcome Manoj,
+                Welcome {{ $globals._.capitalize($auth.user.name.split(' ').splice(0, 1)) }},
               </v-list-item-title>
-              <v-list-item-subtitle>Mon, 12:30 PM</v-list-item-subtitle>
+              <v-list-item-subtitle>{{ currentDateTime }}</v-list-item-subtitle>
             </v-list-item-content>
             <v-list-item-avatar color="grey darken-3">
-              <v-img
-                class="elevation-6"
-                src="https://avataaars.io/?avatarStyle=Transparent&topType=ShortHairShortCurly&accessoriesType=Prescription02&hairColor=Black&facialHairType=Blank&clotheType=Hoodie&clotheColor=White&eyeType=Default&eyebrowType=DefaultNatural&mouthType=Default&skinColor=Light"
-              />
+              <v-avatar color="teal">
+                <span class="white--text" v-text="$globals.customerInitial($auth.user.name)" />
+              </v-avatar>
             </v-list-item-avatar>
           </v-list-item>
         </v-card-text>
       </v-card>
       <v-card elevation="6" class="mt-2">
-        <v-card-text>
+        <!-- <v-list-item three-line>
+          <v-list-item-content>
+            <v-list-item-title>
+              <v-flex>
+                <v-chip
+                  class="ma-2"
+                  label
+                >
+                  Sales
+                </v-chip>
+                <v-spacer />
+                <v-chip
+                  class="ma-2"
+                  color="green"
+                  text-color="white"
+                >
+                  {{ summary.month }}
+                </v-chip>
+              </v-flex>
+            </v-list-item-title>
+            <v-list-item-subtitle>Greyhound divisely hello coldly fonwderfully</v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
+        <v-card-actions>
+          <v-btn text>Button</v-btn>
+          <v-btn text>Button</v-btn>
+        </v-card-actions> -->
+        <v-card-text style="position: relative;">
+          <v-row style="position: absolute;right: 0px;top: 0px;">
+            <v-col class="py-0" cols="12">
+              <v-chip
+                color="green"
+                text-color="white"
+                label
+              >
+                {{ summary.month }}
+              </v-chip>
+            </v-col>
+          </v-row>
           <v-row align="center">
             <v-col align="center" cols="12">
               <v-list-item two-line>
                 <v-list-item-content>
                   <v-list-item-title class="display-3">
-                    5670 <v-icon class="display-2 mb-3">
+                    {{ $globals.formatNumber(summary.total) }} <v-icon class="display-2 mb-3">
                       mdi-currency-inr
                     </v-icon>
                   </v-list-item-title>
-                  <v-list-item-subtitle>Today's total earnigns</v-list-item-subtitle>
+                  <v-list-item-subtitle>Total Transactions Amount</v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
             </v-col>
@@ -38,30 +75,42 @@
         </v-card-text>
       </v-card>
       <v-row>
-        <v-col align="center" class="pr-1" cols="6">
-          <v-card elevation="6" class="mt-2">
-            <v-list-item>
+        <v-col class="pr-1" cols="6">
+          <v-card elevation="6" class="mt-1">
+            <v-list-item class="pr-0" style="postion: relative;">
               <v-list-item-content>
                 <v-list-item-subtitle>Credit</v-list-item-subtitle>
-                <v-list-item-title class="headline">
-                  1,500 <v-icon class="headline mb-2">
+                <v-list-item-title class="font-weight-bold mt-1">
+                  {{ $globals.formatNumber(summary.credit.total) }}  <v-icon small class="mb-1">
                     mdi-currency-inr
                   </v-icon>
                 </v-list-item-title>
               </v-list-item-content>
+              <v-btn icon class="pr-3" color="success" dark>
+                <v-icon absolute top right>
+                  mdi-arrow-bottom-left-thick
+                </v-icon>
+              </v-btn>
             </v-list-item>
           </v-card>
         </v-col>
-        <v-col align="center" class="pl-1" cols="6">
-          <v-card elevation="6" class="mt-2">
-            <v-list-item-content>
-              <v-list-item-subtitle>Debit</v-list-item-subtitle>
-              <v-list-item-title class="headline">
-                1,500 <v-icon class="headline mb-2">
-                  mdi-currency-inr
+        <v-col class="pl-1" cols="6">
+          <v-card elevation="6" class="mt-1">
+            <v-list-item class="pr-0" style="postion: relative;">
+              <v-list-item-content>
+                <v-list-item-subtitle> Debit </v-list-item-subtitle>
+                <v-list-item-title class="font-weight-bold mt-1">
+                  {{ $globals.formatNumber(summary.debit.total) }} <v-icon small class="mb-1">
+                    mdi-currency-inr
+                  </v-icon>
+                </v-list-item-title>
+              </v-list-item-content>
+              <v-btn icon class="pr-3" color="error" dark>
+                <v-icon absolute top right>
+                  mdi-arrow-top-right-thick
                 </v-icon>
-              </v-list-item-title>
-            </v-list-item-content>
+              </v-btn>
+            </v-list-item>
           </v-card>
         </v-col>
       </v-row>
@@ -76,7 +125,7 @@
         <v-card-text>
           <e-chart
             :path-option="[
-              ['dataset.source', siteTrafficData],
+              ['dataset.source', lastWeekDetails],
               ['color', ['#59d955', '#ff4a37']],
               ['legend.show', true],
               ['xAxis.axisLabel.show', true],
@@ -102,27 +151,64 @@
 </template>
 
 <script>
+import _ from 'lodash'
 import EChart from '@/components/chart/echart'
+
 import 'echarts/lib/component/legend'
+
 export default {
   components: {
     EChart
   },
+  async asyncData ({ app }) {
+    const result = {}
+    const [error, response] = await app.$api.get('ShopKeepers/dashboard')
+    if (!error) {
+      result.lastWeek = response.data.lastWeek
+      result.summary = response.data.summary
+    }
+    return result
+  },
   data () {
     return {
-      time: 0
+      summary: {},
+      time: 0,
+      lastWeek: []
     }
   },
   computed: {
-    siteTrafficData () {
-      const shortMonth = ['SU', 'MO', 'TU', 'WED', 'TH', 'FR', 'SA']
-      return shortMonth.map((m) => {
-        return {
-          month: m,
-          Credit: Math.floor(Math.random() * 1000) + 200,
-          Debit: Math.floor(Math.random() * 1000) + 250
+    currentDateTime () {
+      return this.$moment().format('llll')
+    },
+    lastWeekDetails () {
+      // eslint-disable-next-line
+      const lastWeekDays = this.getLastWeekDays()
+      // const weekDays = ['SU', 'MO', 'TU', 'WED', 'TH', 'FR', 'SA']
+      const lastWeekData = _.groupBy(this.lastWeek, 'date')
+      // eslint-disable-next-line
+      console.log(lastWeekData)
+      return lastWeekDays.map((data) => {
+        const details = {
+          day: data.day,
+          Credit: 0,
+          Debit: 0
         }
+        if (lastWeekData[data.date]) {
+          details.Credit = _.find(lastWeekData[data.date], { type: 'CREDIT' }).total || 0
+          details.Debit = _.find(lastWeekData[data.date], { type: 'DEBIT' }).total || 0
+        }
+        return details
       })
+    }
+  },
+  methods: {
+    getLastWeekDays () {
+      const days = []
+      for (let i = 0; i < 7; i++) {
+        const currentDay = this.$moment().subtract(i, 'days')
+        days.push({ date: currentDay.format('YYYY-MM-DD'), day: currentDay.format('ddd').toUpperCase() })
+      }
+      return days.reverse()
     }
   }
 }

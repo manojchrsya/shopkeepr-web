@@ -63,6 +63,7 @@
 </template>
 
 <script>
+import _ from 'lodash'
 import {
   required, numeric, minLength, maxLength
 } from 'vuelidate/lib/validators'
@@ -123,10 +124,11 @@ export default {
         // eslint-disable-next-line no-unused-vars
         const [error, response] = await customerPromise
         if (!error && response) {
-          window.getApp.$emit('SHOW_SUCCESS_MESSAGE', {
-            message: 'Customer saved successfully!!!'
-          })
+          this.$globals.showSuccessMessage('Customer saved successfully!!!')
           this.id = response.data.id
+        } else {
+          const errorMessage = _.has(error.response.data, 'error.message') ? error.response.data.error.message : ''
+          this.$globals.showErrorMessage(errorMessage)
         }
       }
     }
