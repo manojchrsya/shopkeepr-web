@@ -185,8 +185,6 @@ export default {
       const lastWeekDays = this.getLastWeekDays()
       // const weekDays = ['SU', 'MO', 'TU', 'WED', 'TH', 'FR', 'SA']
       const lastWeekData = _.groupBy(this.lastWeek, 'date')
-      // eslint-disable-next-line
-      console.log(lastWeekData)
       return lastWeekDays.map((data) => {
         const details = {
           day: data.day,

@@ -7,8 +7,6 @@ export default [
         color: 'error',
         text: data.message
       }
-      // eslint-disable-next-line
-      console.log(this.snackbar);
     }
   },
   {
