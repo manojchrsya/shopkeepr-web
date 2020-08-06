@@ -192,8 +192,10 @@ export default {
           Debit: 0
         }
         if (lastWeekData[data.date]) {
-          details.Credit = _.find(lastWeekData[data.date], { type: 'CREDIT' }).total || 0
-          details.Debit = _.find(lastWeekData[data.date], { type: 'DEBIT' }).total || 0
+          const lastWeekCredit = _.find(lastWeekData[data.date], { type: 'CREDIT' }) || {}
+          const lastWeekDebit = _.find(lastWeekData[data.date], { type: 'DEBIT' }) || {}
+          details.Credit = lastWeekCredit.total || 0
+          details.Debit = lastWeekDebit.total || 0
         }
         return details
       })
