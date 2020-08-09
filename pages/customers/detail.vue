@@ -39,28 +39,28 @@
         </v-list-item>
         <v-card-text>
           <v-layout>
-            <v-flex class="py-0" xs6>
+            <v-flex class="py-0" xs12>
               <v-text-field
-                v-model="payment.amount"
-                label="Amount"
+                v-model="payment.actualAmount"
+                label="Actual Invoice Amount"
                 solo
                 append-icon="mdi-currency-inr"
                 dense
                 single-line
-                :error-messages="amountErrors"
+                :error-messages="actualAmountErrors"
               />
             </v-flex>
-            <v-spacer />
-            <v-flex class="py-0" xs5>
-              <v-select
-                v-model="payment.type"
-                single-line
-                dense
-                item-text="name"
-                item-value="value"
-                :items="paymentOptions"
-                label="Payment Type"
+          </v-layout>
+          <v-layout>
+            <v-flex class="py-0" xs12>
+              <v-text-field
+                v-model="payment.receivedAmount"
+                label="Received Amount"
                 solo
+                append-icon="mdi-currency-inr"
+                dense
+                single-line
+                :error-messages="receivedAmountErrors"
               />
             </v-flex>
           </v-layout>
@@ -208,17 +208,24 @@ export default {
       transactions: []
     },
     payment: {
-      type: 'CREDIT',
-      amount: '',
+      actualAmount: '',
+      receivedAmount: '',
       remarks: ''
     }
   }),
   computed: {
-    amountErrors () {
+    actualAmountErrors () {
       const errors = []
-      if (!this.$v.payment.amount.$dirty) { return errors }
-      if (!this.$v.payment.amount.required) { errors.push('Amount is required.') }
-      if (!this.$v.payment.amount.numeric) { errors.push('Amount should be numeric.') }
+      if (!this.$v.payment.actualAmount.$dirty) { return errors }
+      if (!this.$v.payment.actualAmount.required) { errors.push('Actual Amount is required.') }
+      if (!this.$v.payment.actualAmount.numeric) { errors.push('Actual Amount should be numeric.') }
+      return errors
+    },
+    receivedAmountErrors () {
+      const errors = []
+      if (!this.$v.payment.receivedAmount.$dirty) { return errors }
+      if (!this.$v.payment.receivedAmount.required) { errors.push('Received Amount is required.') }
+      if (!this.$v.payment.receivedAmount.numeric) { errors.push('Received Amount should be numeric.') }
       return errors
     },
     remarksErrors () {
@@ -233,8 +240,8 @@ export default {
       this.$v.$touch()
       if (!this.$v.$invalid) {
         const formData = {
-          type: this.payment.type,
-          amount: this.payment.amount,
+          actualAmount: this.payment.actualAmount,
+          receivedAmount: this.payment.receivedAmount,
           remarks: this.payment.remarks
         }
         // eslint-disable-next-line no-unused-vars
@@ -243,7 +250,8 @@ export default {
           window.getApp.$emit('SHOW_SUCCESS_MESSAGE', {
             message: 'Transaction saved successfully!!!'
           })
-          this.payment.amount = ''
+          this.payment.actualAmount = ''
+          this.payment.receivedAmount = ''
           this.payment.remarks = ''
           this.$nextTick(() => { this.$v.$reset() })
           this.customer = response.data
@@ -253,7 +261,11 @@ export default {
   },
   validations: {
     payment: {
-      amount: {
+      actualAmount: {
+        required,
+        numeric
+      },
+      receivedAmount: {
         required,
         numeric
       },
