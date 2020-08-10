@@ -92,7 +92,7 @@
               <v-list-item-content>
                 <v-list-item-subtitle>Total Credit</v-list-item-subtitle>
                 <v-list-item-title class="font-weight-bold mt-1">
-                  {{ $globals.formatNumber(customer.summary.revenue.total) }}  <v-icon small class="mb-1">
+                  {{ $globals.formatNumber(customer.summary.credit.total) }}  <v-icon small class="mb-1">
                     mdi-currency-inr
                   </v-icon>
                 </v-list-item-title>
@@ -132,7 +132,7 @@
           </v-list-item-content>
           <v-list-item-action>
             <v-list-item-title class="font-weight-bold mt-1">
-              {{ $globals.formatNumber(customer.summary.total) }} <v-icon small class="mb-1">
+              {{ $globals.formatNumber(customer.summary.revenue.total) }} <v-icon small class="mb-1">
                 mdi-currency-inr
               </v-icon>
             </v-list-item-title>
