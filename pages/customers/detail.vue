@@ -90,9 +90,9 @@
           <v-card elevation="6" class="mt-1">
             <v-list-item class="pr-0" style="postion: relative;">
               <v-list-item-content>
-                <v-list-item-subtitle>Credit</v-list-item-subtitle>
+                <v-list-item-subtitle>Total Credit</v-list-item-subtitle>
                 <v-list-item-title class="font-weight-bold mt-1">
-                  {{ $globals.formatNumber(customer.summary.credit.total) }}  <v-icon small class="mb-1">
+                  {{ $globals.formatNumber(customer.summary.revenue.total) }}  <v-icon small class="mb-1">
                     mdi-currency-inr
                   </v-icon>
                 </v-list-item-title>
@@ -109,7 +109,7 @@
           <v-card elevation="6" class="mt-1">
             <v-list-item class="pr-0" style="postion: relative;">
               <v-list-item-content>
-                <v-list-item-subtitle> Debit </v-list-item-subtitle>
+                <v-list-item-subtitle> Total Debit </v-list-item-subtitle>
                 <v-list-item-title class="font-weight-bold mt-1">
                   {{ $globals.formatNumber(customer.summary.debit.total) }} <v-icon small class="mb-1">
                     mdi-currency-inr
@@ -145,7 +145,10 @@
               :key="txn.id"
             >
               <v-list-item-avatar>
-                <v-btn :color="txn.type === 'CREDIT' ? 'success': 'error'" fab x-small dark>
+                <v-btn v-if="txn.type === 'SETTLED'" color="warning" fab x-small dark>
+                  <v-icon>mdi-arrow-down-thick</v-icon>
+                </v-btn>
+                <v-btn v-else :color="txn.type === 'CREDIT' ? 'success': 'error'" fab x-small dark>
                   <v-icon>{{ txn.type === 'CREDIT' ? 'mdi-arrow-top-right-thick': 'mdi-arrow-bottom-left-thick' }}</v-icon>
                 </v-btn>
               </v-list-item-avatar>
@@ -200,7 +203,6 @@ export default {
     }
   },
   data: () => ({
-    paymentOptions: [{ name: 'Credit', value: 'CREDIT' }, { name: 'Debit', value: 'DEBIT' }],
     customer: {
       name: '',
       mobile: '',

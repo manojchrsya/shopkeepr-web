@@ -63,11 +63,11 @@
               <v-list-item two-line>
                 <v-list-item-content>
                   <v-list-item-title class="display-3">
-                    {{ $globals.formatNumber(summary.total) }} <v-icon class="display-2 mb-3">
+                    {{ $globals.formatNumber(summary.revenue.total) }} <v-icon class="display-2 mb-3">
                       mdi-currency-inr
                     </v-icon>
                   </v-list-item-title>
-                  <v-list-item-subtitle>Total Transactions Amount</v-list-item-subtitle>
+                  <v-list-item-subtitle>Revenue Amount</v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
             </v-col>
