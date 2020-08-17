@@ -125,63 +125,7 @@
           </v-card>
         </v-col>
       </v-row>
-      <v-card>
-        <v-list-item>
-          <v-list-item-content>
-            <v-list-item-subtitle>All Transactions</v-list-item-subtitle>
-          </v-list-item-content>
-          <v-list-item-action>
-            <v-list-item-title class="font-weight-bold mt-1">
-              {{ $globals.formatNumber(customer.summary.revenue.total) }} <v-icon small class="mb-1">
-                mdi-currency-inr
-              </v-icon>
-            </v-list-item-title>
-          </v-list-item-action>
-        </v-list-item>
-        <v-divider />
-        <v-list v-if="customer.transactions.length > 0">
-          <template v-for="(txn, index) in customer.transactions">
-            <v-list-item
-              :key="txn.id"
-            >
-              <v-list-item-avatar>
-                <v-btn v-if="txn.type === 'SETTLED'" color="warning" fab x-small dark>
-                  <v-icon>mdi-arrow-down-thick</v-icon>
-                </v-btn>
-                <v-btn v-else :color="txn.type === 'CREDIT' ? 'success': 'error'" fab x-small dark>
-                  <v-icon>{{ txn.type === 'CREDIT' ? 'mdi-arrow-top-right-thick': 'mdi-arrow-bottom-left-thick' }}</v-icon>
-                </v-btn>
-              </v-list-item-avatar>
-
-              <v-list-item-content>
-                <v-tooltip top>
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-list-item-title v-bind="attrs" v-on="on" v-text="txn.remarks" />
-                  </template>
-                  <span v-html="(txn.remarks || '').split(',').join('<br>')" />
-                </v-tooltip>
-                <v-list-item-subtitle v-text="$moment(txn.createdOn).fromNow()" />
-              </v-list-item-content>
-
-              <v-list-item-action>
-                <v-list-item-title class="font-weight-bold mt-1">
-                  {{ $globals.formatNumber(txn.amount) }} <v-icon small class="mb-1">
-                    mdi-currency-inr
-                  </v-icon>
-                </v-list-item-title>
-              </v-list-item-action>
-            </v-list-item>
-            <v-divider v-if="index !== (customer.transactions.length - 1)" :key="index" />
-          </template>
-        </v-list>
-        <v-list-item v-else>
-          <v-list-item-content>
-            <v-list-item-title style="text-align:center;">
-              No Transactions found.
-            </v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </v-card>
+      <Transaction :transactions="customer.transactions" :summary="customer.summary" />
     </v-flex>
   </v-layout>
 </template>
@@ -190,8 +134,12 @@
 import {
   required, numeric
 } from 'vuelidate/lib/validators'
+import Transaction from '@/components/transaction'
 
 export default {
+  components: {
+    Transaction
+  },
   async asyncData ({ app, route }) {
     if (route && route.query && route.query.id) {
       const customerId = route.query.id

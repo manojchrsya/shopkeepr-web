@@ -86,7 +86,7 @@
           </v-card>
         </v-col>
       </v-row>
-      <v-card>
+      <!-- <v-card>
         <v-list-item>
           <v-list-item-content>
             <v-list-item-subtitle>Transactions</v-list-item-subtitle>
@@ -106,7 +106,10 @@
               :key="txn.id"
             >
               <v-list-item-avatar>
-                <v-btn :color="txn.type === 'CREDIT' ? 'success': 'error'" fab x-small dark>
+                <v-btn v-if="txn.type === 'SETTLED'" color="warning" fab x-small dark>
+                  <v-icon>mdi-arrow-down-thick</v-icon>
+                </v-btn>
+                <v-btn v-else :color="txn.type === 'CREDIT' ? 'success': 'error'" fab x-small dark>
                   <v-icon>{{ txn.type === 'CREDIT' ? 'mdi-arrow-top-right-thick': 'mdi-arrow-bottom-left-thick' }}</v-icon>
                 </v-btn>
               </v-list-item-avatar>
@@ -139,7 +142,8 @@
             </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-      </v-card>
+      </v-card> -->
+      <Transaction :transactions="transactions" :summary="summary" :show-customer="true" />
     </v-flex>
   </v-layout>
 </template>
@@ -147,10 +151,13 @@
 <script>
 import EChart from '@/components/chart/echart'
 import 'echarts/lib/component/legend'
+import Transaction from '@/components/transaction'
+
 export default {
   components: {
     // eslint-disable-next-line vue/no-unused-components
-    EChart
+    EChart,
+    Transaction
   },
   async asyncData ({ app }) {
     const result = {}
