@@ -16,11 +16,11 @@
           <v-list-item height="5">
             <v-list-item-content class="py-2">
               <v-list-item-subtitle>TransactionID</v-list-item-subtitle>
-              <v-list-item-subtitle>#12334343534</v-list-item-subtitle>
+              <v-list-item-subtitle>#{{ transaction.id }}</v-list-item-subtitle>
             </v-list-item-content>
             <v-list-item-action>
               <v-btn icon>
-                <v-btn color="red" fab x-small dark>
+                <v-btn color="red" icon dark @click="showConfirmation = true">
                   <v-icon>mdi-delete</v-icon>
                 </v-btn>
               </v-btn>
@@ -29,13 +29,13 @@
           <v-list-item height="5">
             <v-list-item-content class="py-0">
               <v-list-item-subtitle>Transacted On</v-list-item-subtitle>
-              <v-list-item-subtitle>15 August 2020, Sat, 10:30 PM</v-list-item-subtitle>
+              <v-list-item-subtitle>{{ $moment(transaction.createdOn).format('MMMM Do YYYY, h:mm A') }}</v-list-item-subtitle>
             </v-list-item-content>
             <v-list-item-action>
-              <v-btn v-if="transaction.type === 'SETTLED'" color="warning" fab x-small dark>
+              <v-btn v-if="transaction.type === 'SETTLED'" color="warning" icon dark>
                 <v-icon>mdi-arrow-down-thick</v-icon>
               </v-btn>
-              <v-btn v-else :color="transaction.type === 'CREDIT' ? 'success': 'error'" fab x-small dark>
+              <v-btn v-else :color="transaction.type === 'CREDIT' ? 'success': 'error'" icon dark>
                 <v-icon>{{ transaction.type === 'CREDIT' ? 'mdi-arrow-top-right-thick': 'mdi-arrow-bottom-left-thick' }}</v-icon>
               </v-btn>
             </v-list-item-action>
@@ -46,14 +46,14 @@
         <v-list>
           <v-list-item>
             <v-list-item-content>
-              <v-list-item-title>Manoj Chaurasiya</v-list-item-title>
+              <v-list-item-title v-text="transaction.customer && transaction.customer.name" />
               <v-list-item-subtitle style="white-space: normal;">
-                hi sis test that, it ss dhsds, asdasd, asdasd, asdasddsdssd asdasdds, asdasdds
+                {{ transaction.remarks }}
               </v-list-item-subtitle>
             </v-list-item-content>
             <v-list-item-action>
               <v-list-item-title class="font-weight-bold mt-1">
-                21,023 <v-icon small class="mb-1">
+                {{ $globals.formatNumber(transaction.amount) }} <v-icon small class="mb-1">
                   mdi-currency-inr
                 </v-icon>
               </v-list-item-title>
@@ -62,39 +62,68 @@
         </v-list>
       </v-card>
     </v-flex>
+    <v-flex>
+      <v-dialog v-model="showConfirmation" max-width="400">
+        <v-card>
+          <v-card-title class="headline">
+            Delete Transaction
+          </v-card-title>
+          <v-card-text class="py-0">
+            <p> Are you sure, you want to delete this transaction? </p>
+            <p v-if="transaction.invoiceId" style="color:#2196f3;">
+              Note: This could impact your <strong>total revenue</strong>.
+            </p>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer />
+            <v-btn color="primary" @click.prevent="showConfirmation = false">
+              Cancel
+            </v-btn>
+            <v-btn color="error" @click.prevent="deleteTransaction">
+              Delete
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-flex>
   </v-layout>
 </template>
 
 <script>
-const _ = require('lodash')
-
 export default {
+  async asyncData ({ app, route }) {
+    if (route && route.query && route.query.id) {
+      const txnId = route.query.id
+      const source = route.query.source || 'transaction'
+      // eslint-disable-next-line no-unused-vars
+      const [error, response] = await app.$api.get('Customers/getTxnDetail', { params: { options: { txnId } } })
+      if (!error) {
+        return { transaction: response.data, source }
+      }
+    }
+  },
   data: () => ({
-    remarks: 'This si test',
-    transaction: {
-      type: 'SETTLED'
-    },
-    source: 'transaction'
+    transaction: {},
+    source: '',
+    showConfirmation: false
   }),
   computed: {
     getLastRoute () {
-      return this.source === 'transaction' ? '/transactions' : '/customers/list'
-    },
-    business () {
-      const details = _.first(this.$auth.state.shop) || {}
-      return {
-        Name: details.displayName,
-        Mobile: details.mobile,
-        'GST Number': details.gstNumber || '-',
-        'Pan Card': details.pancard || '-'
+      return this.source === 'transaction' ? '/transactions' : `/customers/detail?id=${this.transaction.customer.id}`
+    }
+  },
+  methods: {
+    async deleteTransaction () {
+      const formData = {
+        txnId: this.transaction.id
       }
-    },
-    customer () {
-      const details = this.$auth.user
-      return {
-        Name: details.name,
-        Mobile: details.mobile,
-        Email: details.email
+      // eslint-disable-next-line no-unused-vars
+      const [error, response] = await this.$api.post('Customers/deleteTransaction', formData)
+      if (!error && response) {
+        window.getApp.$emit('SHOW_SUCCESS_MESSAGE', {
+          message: 'Transaction deleted successfully!!!'
+        })
+        this.$nextTick(() => { this.$router.push(this.getLastRoute) })
       }
     }
   }

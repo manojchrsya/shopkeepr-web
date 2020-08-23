@@ -3,7 +3,7 @@
     <v-flex>
       <v-card class="mx-auto px-0">
         <v-toolbar color="cyan">
-          <v-btn icon :to="'/customers/list'">
+          <v-btn icon :to="getRoute">
             <v-icon color="black lighten-1">
               mdi-close
             </v-icon>
@@ -85,6 +85,7 @@ export default {
         }
       }
     }
+    return { id: '', name: '', mobile: '', description: '' }
   },
   data: () => ({
     id: '',
@@ -104,6 +105,9 @@ export default {
       if (!this.$v.mobile.$dirty) { return errors }
       if (!this.$v.mobile.isValidMobileNumber) { errors.push('Invalid Mobile.') }
       return errors
+    },
+    getRoute () {
+      return this.id ? `/customers/detail?id=${this.id}` : '/customers/list'
     }
   },
   methods: {

@@ -31,11 +31,18 @@
               </v-icon>
             </v-list-item-title>
           </v-list-item-content>
-          <v-list-item-avatar class="mt-5" color="grey darken-3">
-            <v-avatar color="teal">
-              <span class="white--text" v-text="$globals.customerInitial(customer.name)" />
-            </v-avatar>
-          </v-list-item-avatar>
+          <v-badge
+            avatar
+            bordered
+            overlap
+            icon="mdi-pencil"
+          >
+            <v-list-item-avatar class="my-0 mx-0" color="grey darken-3" @click.prevent="$router.push('/customers/add?id='+customer.id)">
+              <v-avatar color="teal">
+                <span class="white--text" v-text="$globals.customerInitial(customer.name)" />
+              </v-avatar>
+            </v-list-item-avatar>
+          </v-badge>
         </v-list-item>
         <v-card-text>
           <v-layout>
@@ -125,7 +132,7 @@
           </v-card>
         </v-col>
       </v-row>
-      <Transaction :transactions="customer.transactions" :summary="customer.summary" />
+      <Transaction :transactions="customer.transactions" :summary="customer.summary" :source="'customer'" />
     </v-flex>
   </v-layout>
 </template>
@@ -146,7 +153,15 @@ export default {
       // eslint-disable-next-line no-unused-vars
       const [error, response] = await app.$api.get(`Customers/${customerId}/getDetails`)
       if (!error) {
-        return { customer: response.data }
+        const customer = response.data
+        customer.summary = customer.summary || {
+          credit: { total: 0 },
+          debit: { total: 0 },
+          revenue: { total: 0 },
+          dueAmount: 0,
+          advanceAmount: 0
+        }
+        return { customer }
       }
     }
   },

@@ -86,63 +86,6 @@
           </v-card>
         </v-col>
       </v-row>
-      <!-- <v-card>
-        <v-list-item>
-          <v-list-item-content>
-            <v-list-item-subtitle>Transactions</v-list-item-subtitle>
-          </v-list-item-content>
-          <v-list-item-action>
-            <v-list-item-title class="font-weight-bold mt-1">
-              {{ $globals.formatNumber(summary.revenue.total) }} <v-icon small class="mb-1">
-                mdi-currency-inr
-              </v-icon>
-            </v-list-item-title>
-          </v-list-item-action>
-        </v-list-item>
-        <v-divider />
-        <v-list v-if="transactions.length > 0">
-          <template v-for="(txn, index) in transactions">
-            <v-list-item
-              :key="txn.id"
-            >
-              <v-list-item-avatar>
-                <v-btn v-if="txn.type === 'SETTLED'" color="warning" fab x-small dark>
-                  <v-icon>mdi-arrow-down-thick</v-icon>
-                </v-btn>
-                <v-btn v-else :color="txn.type === 'CREDIT' ? 'success': 'error'" fab x-small dark>
-                  <v-icon>{{ txn.type === 'CREDIT' ? 'mdi-arrow-top-right-thick': 'mdi-arrow-bottom-left-thick' }}</v-icon>
-                </v-btn>
-              </v-list-item-avatar>
-
-              <v-list-item-content>
-                <v-list-item-title v-text="txn.customer.name" />
-                <v-tooltip top>
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-list-item-subtitle v-bind="attrs" v-on="on" v-text="txn.remarks" />
-                  </template>
-                  <span v-html="txn.remarks.split(',').join('<br>')" />
-                </v-tooltip>
-              </v-list-item-content>
-
-              <v-list-item-action>
-                <v-list-item-title class="font-weight-bold mt-1">
-                  {{ $globals.formatNumber(txn.amount) }} <v-icon small class="mb-1">
-                    mdi-currency-inr
-                  </v-icon>
-                </v-list-item-title>
-              </v-list-item-action>
-            </v-list-item>
-            <v-divider v-if="index !== (transactions.length - 1)" :key="index" />
-          </template>
-        </v-list>
-        <v-list-item v-else>
-          <v-list-item-content>
-            <v-list-item-title style="text-align:center;">
-              No Transactions found.
-            </v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </v-card> -->
       <Transaction :transactions="transactions" :summary="summary" :show-customer="true" />
     </v-flex>
   </v-layout>
@@ -164,7 +107,13 @@ export default {
     const [error, response] = await app.$api.get('ShopKeepers/getTxnDetails')
     if (!error) {
       result.transactions = response.data.transactions
-      result.summary = response.data.summary
+      result.summary = response.data.summary || {
+        credit: { total: 0 },
+        debit: { total: 0 },
+        revenue: { total: 0 },
+        dueAmount: 0,
+        advanceAmount: 0
+      }
     }
     return { ...result }
   },

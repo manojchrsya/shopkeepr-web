@@ -17,7 +17,6 @@
       <template v-for="(txn, index) in transactions">
         <v-list-item
           :key="txn.id"
-          :to="'/transactions/detail?id='+txn.id+'&source='+source"
         >
           <v-list-item-avatar>
             <v-btn v-if="txn.type === 'SETTLED'" color="warning" fab x-small dark>
@@ -35,7 +34,9 @@
               </template>
               <span v-html="(txn.remarks || '').split(',').join('<br>')" />
             </v-tooltip>
-            <v-list-item-subtitle v-text="$moment(txn.createdOn).fromNow()" />
+            <v-list-item-subtitle>
+              {{ $moment(txn.createdOn).fromNow() }}
+            </v-list-item-subtitle>
           </v-list-item-content>
           <v-list-item-content v-else>
             <v-list-item-title v-text="txn.customer && txn.customer.name" />
@@ -47,11 +48,16 @@
             </v-tooltip>
           </v-list-item-content>
           <v-list-item-action>
-            <v-list-item-title class="font-weight-bold mt-1">
-              {{ $globals.formatNumber(txn.amount) }} <v-icon small class="mb-1">
+            <v-list-item-action-text class="mt-1">
+              <span class="font-weight-bold">{{ $globals.formatNumber(txn.amount) }}</span> <v-icon small class="mb-1">
                 mdi-currency-inr
               </v-icon>
-            </v-list-item-title>
+            </v-list-item-action-text>
+            <v-btn icon :to="'/transactions/detail?id='+txn.id+'&source='+source">
+              <v-icon color="black lighten-1">
+                mdi-arrow-down-drop-circle-outline
+              </v-icon>
+            </v-btn>
           </v-list-item-action>
         </v-list-item>
         <v-divider v-if="index !== (transactions.length - 1)" :key="index" />

@@ -14,7 +14,7 @@
                 overlap
                 icon="mdi-pencil"
               >
-                <v-avatar color="orange" size="62">
+                <v-avatar color="teal" size="62">
                   <v-img
                     size="60"
                     class="elevation-6"

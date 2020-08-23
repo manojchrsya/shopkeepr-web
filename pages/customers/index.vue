@@ -28,16 +28,38 @@
               </v-list-item-avatar>
 
               <v-list-item-content>
-                <v-list-item-title :key="index" v-text="item.name" />
+                <v-list-item-title>
+                  {{ item.name }}
+                  <!-- <v-icon color="success" class="pb-2 mr-0" absolute top right>
+                    mdi-arrow-bottom-left-thick
+                  </v-icon> -->
+                </v-list-item-title>
                 <v-list-item-subtitle v-text="item.mobile || '-'" />
               </v-list-item-content>
 
-              <v-list-item-action>
-                <v-btn icon :to="'/customers/add?id='+item.id">
-                  <v-icon color="grey lighten-1">
-                    mdi-pencil
-                  </v-icon>
-                </v-btn>
+              <v-list-item-action v-if="item.summary && item.summary.dueAmount > 0">
+                <v-list-item-action-text class="mt-1">
+                  Will Pay
+                </v-list-item-action-text>
+                <span class="font-weight-bold">{{ $globals.formatNumber(item.summary.dueAmount) }}<v-icon small class="mb-1">
+                  mdi-currency-inr
+                </v-icon>
+                </span>
+              </v-list-item-action>
+              <v-list-item-action v-else-if="item.summary && item.summary.advanceAmount > 0">
+                <v-list-item-action-text class="mt-1">
+                  Advance Paid
+                </v-list-item-action-text>
+                <span class="font-weight-bold">{{ $globals.formatNumber(item.summary.advanceAmount) }}<v-icon small class="mb-1">
+                  mdi-currency-inr
+                </v-icon>
+                </span>
+              </v-list-item-action>
+              <v-list-item-action v-else>
+                <v-list-item-action-text class="mt-1">
+                  Is Settled
+                </v-list-item-action-text>
+                <span class="font-weight-bold">-</span>
               </v-list-item-action>
             </v-list-item>
             <v-divider v-if="index !== customers.length" :key="index" />
@@ -72,7 +94,7 @@
 
 export default {
   async asyncData ({ app }) {
-    const [error, response] = await app.$api.get('Customers', { params: { filter: { order: 'createdOn desc' } } })
+    const [error, response] = await app.$api.get('Shopkeepers/getCustomers')
     if (!error) {
       return {
         customers: response.data
