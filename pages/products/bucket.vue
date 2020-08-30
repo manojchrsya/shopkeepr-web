@@ -1,68 +1,38 @@
 <template>
   <v-layout row wrap align-center>
     <v-flex>
-      <v-card flat class="mx-auto px-0">
+      <v-card class="mx-auto px-0">
         <v-toolbar color="cyan">
-          <v-flex class="mt-7" xs12>
-            <v-text-field
-              v-model="search"
-              append-icon="mdi-magnify"
-              solo="solo"
-              label="Search products..."
-              single-line="single-line"
-            />
-          </v-flex>
+          <v-btn icon :to="'/products'">
+            <v-icon color="black lighten-1">
+              mdi-close
+            </v-icon>
+          </v-btn>
+          <v-toolbar-title>My Bucket</v-toolbar-title>
         </v-toolbar>
         <v-list two-line subheader>
           <v-list-item>
             <v-list-item-content>
               <v-list-item-title>Veg Saagar Resaurant (Pure Veg)</v-list-item-title>
               <v-list-item-subtitle>Paan Shop | Bhayander (e)</v-list-item-subtitle>
-              <v-list-item-subtitle>
-                Minimun order with 2,200 <v-icon small class="mb-1">
-                  mdi-currency-inr
-                </v-icon>
-              </v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
         </v-list>
-        <v-bottom-navigation color="tranparent">
-          <v-btn>
-            <span>1 Day</span>
-            <v-icon>mdi-history</v-icon>
-          </v-btn>
-          <v-spacer />
-          <v-btn :href="'tel:+919987492873'">
-            <span>Call Now</span>
-            <v-icon>mdi-cellphone-basic</v-icon>
-          </v-btn>
-          <v-spacer />
-          <v-btn :to="'/bucket'">
-            <span>Basket</span>
-            <v-icon>mdi-basket-outline</v-icon>
-          </v-btn>
-        </v-bottom-navigation>
-        <v-divider />
-        <v-list v-if="items.length > 0" three-line class="px-0">
+      </v-card>
+      <v-card v-if="items.length > 0" class="mt-2">
+        <v-list class="px-0">
           <template v-for="(item, index) in items">
             <v-subheader v-if="item.header" :key="item.header" v-text="item.header" />
             <v-divider v-else-if="item.divider" :key="index" :inset="item.inset" />
-            <v-list-item v-else :key="item.title" class="px-2">
+            <v-list-item v-else :key="item.title">
               <!-- <v-list-item-icon class="mx-2">
-                <v-img :border-radius="10" :src="item.avatar" :max-height="60" :max-width="50" />
+                <v-img :border-radius="10" :src="item.avatar" :max-height="30" :max-width="30" />
               </v-list-item-icon> -->
               <v-list-item-content>
                 <v-list-item-title v-text="item.title" />
-                <v-list-item-subtitle v-html="item.subtitle" />
               </v-list-item-content>
               <v-list-item-action class="mx-0 mb-0">
-                <v-list-item-action-text class="font-weight-bold mt-1">
-                  {{ $globals.formatNumber(item.price) }}
-                  <v-icon small class="mb-1">
-                    mdi-currency-inr
-                  </v-icon>
-                </v-list-item-action-text>
-                <v-layout class="mt-1">
+                <v-layout>
                   <v-flex class="py-0">
                     <v-icon class="mx-0" color="success" style="font-size: 15px;">
                       mdi-minus
@@ -77,20 +47,61 @@
                       style="width: 20px;"
                     />
                   </v-flex>
-                  <v-flex class="py-0">
+                  <v-flex class="py-0 pr-4">
                     <v-icon class="mx-0" color="success" style="font-size: 15px;">
                       mdi-plus
                     </v-icon>
+                  </v-flex>
+                  <v-flex class="py-0">
+                    <v-list-item-title class="mt-1">
+                      {{ $globals.formatNumber(item.price) }}
+                      <v-icon small class="mb-1">
+                        mdi-currency-inr
+                      </v-icon>
+                    </v-list-item-title>
                   </v-flex>
                 </v-layout>
               </v-list-item-action>
             </v-list-item>
           </template>
+          <v-divider />
+          <v-subheader class="text-right">
+            <v-spacer />
+            Total:
+            <div class="font-weight-bold pl-2">
+              34,444<v-icon small class="mb-1">
+                mdi-currency-inr
+              </v-icon>
+            </div>
+          </v-subheader>
         </v-list>
-        <v-list-item v-else>
+        <v-divider />
+        <v-card-text class="py-0 pt-1">
+          <v-flex class="py-0" xs12>
+            <v-textarea
+              placeholder="Any other special request, will pass it to shopkeeper..."
+              append-icon="mdi-information"
+              single-line
+              dense
+              solo
+              :rows="3"
+            />
+          </v-flex>
+        </v-card-text>
+        <v-divider />
+        <v-card-actions class="pt-0">
+          <v-flex class="py-0" xs12>
+            <v-btn color="success" block dark>
+              Place order
+            </v-btn>
+          </v-flex>
+        </v-card-actions>
+      </v-card>
+      <v-card v-else>
+        <v-list-item>
           <v-list-item-content>
             <v-list-item-title style="text-align:center;">
-              No Product found.
+              No item found in bucket.
             </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
@@ -100,7 +111,6 @@
 </template>
 
 <script>
-
 export default {
   data: () => ({
     items: [

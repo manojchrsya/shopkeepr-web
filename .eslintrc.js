@@ -14,7 +14,10 @@ module.exports = {
   plugins: [
   ],
   // add your custom rules here
-  rules: {},
+  rules: {
+    'vue/no-v-html': ['off'],
+    'vue/singleline-html-element-content-newline': ['off']
+  },
   globals: {
     window: true
   }

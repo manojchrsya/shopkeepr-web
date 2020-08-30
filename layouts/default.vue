@@ -41,9 +41,9 @@
           <span>Transactions</span>
           <v-icon>mdi-currency-inr</v-icon>
         </v-btn>
-        <v-btn :to="'/profile'">
-          <span>Profile</span>
-          <v-icon>mdi-account</v-icon>
+        <v-btn :to="'/products'">
+          <span>Products</span>
+          <v-icon>mdi-chart-box</v-icon>
         </v-btn>
       </v-bottom-navigation>
     </v-footer>

@@ -11,7 +11,7 @@
               <v-list-item-subtitle>{{ currentDateTime }}</v-list-item-subtitle>
             </v-list-item-content>
             <v-list-item-avatar color="grey darken-3">
-              <v-avatar color="teal">
+              <v-avatar color="teal" @click.prevent="$router.push('/profile')">
                 <span class="white--text" v-text="$globals.customerInitial($auth.user.name)" />
               </v-avatar>
             </v-list-item-avatar>
@@ -19,33 +19,6 @@
         </v-card-text>
       </v-card>
       <v-card elevation="6" class="mt-2">
-        <!-- <v-list-item three-line>
-          <v-list-item-content>
-            <v-list-item-title>
-              <v-flex>
-                <v-chip
-                  class="ma-2"
-                  label
-                >
-                  Sales
-                </v-chip>
-                <v-spacer />
-                <v-chip
-                  class="ma-2"
-                  color="green"
-                  text-color="white"
-                >
-                  {{ summary.month }}
-                </v-chip>
-              </v-flex>
-            </v-list-item-title>
-            <v-list-item-subtitle>Greyhound divisely hello coldly fonwderfully</v-list-item-subtitle>
-          </v-list-item-content>
-        </v-list-item>
-        <v-card-actions>
-          <v-btn text>Button</v-btn>
-          <v-btn text>Button</v-btn>
-        </v-card-actions> -->
         <v-card-text style="position: relative;">
           <v-row style="position: absolute;right: 0px;top: 0px;">
             <v-col class="py-0" cols="12">

@@ -5,6 +5,7 @@ const AddCustomer = () => import('~/pages/customers/add').then(m => m.default ||
 const Transactions = () => import('~/pages/transactions').then(m => m.default || m)
 const TransactionDetail = () => import('~/pages/transactions/detail').then(m => m.default || m)
 const Products = () => import('~/pages/products').then(m => m.default || m)
+const Bucket = () => import('~/pages/products/bucket').then(m => m.default || m)
 
 export default [
   {
@@ -33,7 +34,7 @@ export default [
     component: Transactions
   },
   {
-    name: 'transactions',
+    name: 'transactions/detail',
     path: '/transactions/detail',
     component: TransactionDetail
   },
@@ -41,5 +42,10 @@ export default [
     name: 'products',
     path: '/products',
     component: Products
+  },
+  {
+    name: 'bucket',
+    path: '/bucket',
+    component: Bucket
   }
 ]
