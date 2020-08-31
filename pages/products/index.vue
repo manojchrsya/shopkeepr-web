@@ -56,17 +56,19 @@
                 <v-list-item-subtitle v-html="item.subtitle" />
               </v-list-item-content>
               <v-list-item-action class="mx-0 mb-0">
-                <v-list-item-action-text class="font-weight-bold mt-1">
+                <v-list-item-title class="font-weight-bold mt-1 text-right">
                   {{ $globals.formatNumber(item.price) }}
                   <v-icon small class="mb-1">
                     mdi-currency-inr
                   </v-icon>
-                </v-list-item-action-text>
+                </v-list-item-title>
                 <v-layout class="mt-1">
                   <v-flex class="py-0">
-                    <v-icon class="mx-0" color="success" style="font-size: 15px;">
-                      mdi-minus
-                    </v-icon>
+                    <v-btn :height="20" :min-width="20" class="mr-2">
+                      <v-icon class="mx-0" color="success">
+                        mdi-minus
+                      </v-icon>
+                    </v-btn>
                   </v-flex>
                   <v-flex class="py-0">
                     <v-text-field
@@ -78,9 +80,11 @@
                     />
                   </v-flex>
                   <v-flex class="py-0">
-                    <v-icon class="mx-0" color="success" style="font-size: 15px;">
-                      mdi-plus
-                    </v-icon>
+                    <v-btn :height="20" :min-width="20" class="ml-2">
+                      <v-icon class="mx-0" color="success">
+                        mdi-plus
+                      </v-icon>
+                    </v-btn>
                   </v-flex>
                 </v-layout>
               </v-list-item-action>

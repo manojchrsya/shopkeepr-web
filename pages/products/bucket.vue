@@ -34,9 +34,11 @@
               <v-list-item-action class="mx-0 mb-0">
                 <v-layout>
                   <v-flex class="py-0">
-                    <v-icon class="mx-0" color="success" style="font-size: 15px;">
-                      mdi-minus
-                    </v-icon>
+                    <v-btn :height="20" :min-width="20" class="mr-2">
+                      <v-icon class="mx-0" color="success" style="font-size: 15px;">
+                        mdi-minus
+                      </v-icon>
+                    </v-btn>
                   </v-flex>
                   <v-flex class="py-0">
                     <v-text-field
@@ -48,9 +50,11 @@
                     />
                   </v-flex>
                   <v-flex class="py-0 pr-4">
-                    <v-icon class="mx-0" color="success" style="font-size: 15px;">
-                      mdi-plus
-                    </v-icon>
+                    <v-btn :height="20" :min-width="20" class="ml-2">
+                      <v-icon class="mx-0" color="success" style="font-size: 15px;">
+                        mdi-plus
+                      </v-icon>
+                    </v-btn>
                   </v-flex>
                   <v-flex class="py-0">
                     <v-list-item-title class="mt-1">
