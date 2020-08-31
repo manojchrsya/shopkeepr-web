@@ -61,8 +61,6 @@
           </v-list-item>
         </v-list>
       </v-card>
-    </v-flex>
-    <v-flex>
       <v-dialog v-model="showConfirmation" max-width="400">
         <v-card>
           <v-card-title class="headline">
