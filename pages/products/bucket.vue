@@ -13,60 +13,30 @@
         <v-list two-line subheader>
           <v-list-item>
             <v-list-item-content>
-              <v-list-item-title>Veg Saagar Resaurant (Pure Veg)</v-list-item-title>
-              <v-list-item-subtitle>Paan Shop | Bhayander (e)</v-list-item-subtitle>
+              <v-list-item-title>{{ business.displayName }}</v-list-item-title>
+              <v-list-item-subtitle>{{ business.tagLine }}</v-list-item-subtitle>
             </v-list-item-content>
+            <v-list-item-avatar class="my-0 mx-0" color="grey darken-3">
+              <v-avatar color="teal">
+                <span class="white--text" v-text="$globals.customerInitial(business.displayName)" />
+              </v-avatar>
+            </v-list-item-avatar>
           </v-list-item>
         </v-list>
       </v-card>
-      <v-card v-if="items.length > 0" class="mt-2">
+      <v-card v-if="products.length > 0" class="mt-2">
         <v-list class="px-0">
-          <template v-for="(item, index) in items">
+          <template v-for="(item, index) in products">
             <v-subheader v-if="item.header" :key="item.header" v-text="item.header" />
-            <v-divider v-else-if="item.divider" :key="index" :inset="item.inset" />
-            <v-list-item v-else :key="item.title">
-              <!-- <v-list-item-icon class="mx-2">
-                <v-img :border-radius="10" :src="item.avatar" :max-height="30" :max-width="30" />
-              </v-list-item-icon> -->
-              <v-list-item-content>
-                <v-list-item-title v-text="item.title" />
-              </v-list-item-content>
-              <v-list-item-action class="mx-0 mb-0">
-                <v-layout>
-                  <v-flex class="py-0">
-                    <v-btn :height="20" :min-width="20" class="mr-2">
-                      <v-icon class="mx-0" color="success" style="font-size: 15px;">
-                        mdi-minus
-                      </v-icon>
-                    </v-btn>
-                  </v-flex>
-                  <v-flex class="py-0">
-                    <v-text-field
-                      dense
-                      single-line
-                      :value="0"
-                      class="centered-input"
-                      style="width: 20px;"
-                    />
-                  </v-flex>
-                  <v-flex class="py-0 pr-4">
-                    <v-btn :height="20" :min-width="20" class="ml-2">
-                      <v-icon class="mx-0" color="success" style="font-size: 15px;">
-                        mdi-plus
-                      </v-icon>
-                    </v-btn>
-                  </v-flex>
-                  <v-flex class="py-0">
-                    <v-list-item-title class="mt-1">
-                      {{ $globals.formatNumber(item.price) }}
-                      <v-icon small class="mb-1">
-                        mdi-currency-inr
-                      </v-icon>
-                    </v-list-item-title>
-                  </v-flex>
-                </v-layout>
-              </v-list-item-action>
-            </v-list-item>
+            <Product
+              :key="item.id"
+              :index="index"
+              :product="item"
+              :source="'bucket'"
+              @show-customer="openCustomerDialog"
+              @delete-bucket-product="deleteProduct"
+            />
+            <v-divider :key="index" />
           </template>
           <v-divider />
           <v-subheader class="text-right">
@@ -115,46 +85,50 @@
 </template>
 
 <script>
+import Product from '@/components/product'
+const _ = require('lodash')
+
 export default {
+  components: {
+    Product
+  },
+  async asyncData ({ app, route }) {
+    const data = {}
+    data.customerId = route.query.customerId || localStorage.getItem('customerId')
+    localStorage.setItem('customerId', data.customerId)
+    let shopKeeperId = route.query.shopKeeperId || localStorage.getItem('shopKeeperId')
+    if (app.$auth && app.$auth.$state && app.$auth.$state.shop) {
+      shopKeeperId = _.first(app.$auth.$state.shop).id
+    }
+    data.shopKeeperId = shopKeeperId
+    localStorage.setItem('shopKeeperId', data.shopKeeperId)
+    if (data.customerId && data.shopKeeperId) {
+      const [error, response] = await app.$api.get(`Customers/${data.customerId}/getBucket`, {
+        params: { options: { shopKeeperId: data.shopKeeperId } }
+      })
+      if (!error) { data.products = response.data }
+    }
+    return { ...data }
+  },
   data: () => ({
-    items: [
-      {
-        avatar: 'https://cdn.vuetifyjs.com/images/lists/2.jpg',
-        title: 'Paan & Maava',
-        price: 20,
-        subtitle: 'Full custom with multiple flevour. choose you own ingredient and just wait for delevery...'
-      },
-      { divider: true, inset: false },
-      {
-        avatar: 'https://cdn.vuetifyjs.com/images/lists/2.jpg',
-        price: 20,
-        title: 'Gold Flak',
-        subtitle: 'Gold flak with new flavour, touch and minimun price.'
-      },
-      { divider: true, inset: false },
-      {
-        avatar: 'https://cdn.vuetifyjs.com/images/lists/3.jpg',
-        title: 'Four Sqaure',
-        price: 20,
-        subtitle: 'Do you have Paris recommendations? Have you ever been?'
-      },
-      { divider: true, inset: false },
-      {
-        avatar: 'https://cdn.vuetifyjs.com/images/lists/4.jpg',
-        title: 'Hathi Chhap',
-        price: 20,
-        subtitle: 'Have any ideas about what we should get Heidi for her birthday'
-      },
-      { divider: true, inset: false },
-      {
-        avatar: 'https://cdn.vuetifyjs.com/images/lists/5.jpg',
-        title: 'Meetha Paan',
-        price: 20,
-        subtitle: 'We should eat this: Grate, Squash, Corn, and tomatillo Tacos.'
-      }
-    ],
-    search: ''
-  })
+    products: [],
+    search: '',
+    showCustomer: false
+  }),
+  computed: {
+    business () {
+      return _.first(this.$auth.state.shop) || {}
+    }
+  },
+  methods: {
+    openCustomerDialog () {
+      this.showCustomer = true
+    },
+    deleteProduct (data) {
+      this.products.splice(data.index, 1)
+      return true
+    }
+  }
 }
 </script>
 <style scoped>

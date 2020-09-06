@@ -2,7 +2,7 @@
 const numberFormatter = require('number-formatter')
 const lodash = require('lodash')
 
-const customerInitial = data => data.split(' ').map(word => word.slice(0, 1).toUpperCase()).join('')
+const customerInitial = data => data.split(' ').splice(0, 2).map(word => word.slice(0, 1).toUpperCase()).join('')
 const formatNumber = data => numberFormatter('#,##0.##', Math.round(data))
 
 const showErrorMessage = (message) => {
