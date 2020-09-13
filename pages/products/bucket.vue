@@ -3,29 +3,14 @@
     <v-flex>
       <v-card class="mx-auto px-0">
         <v-toolbar color="cyan">
-          <v-btn icon :to="'/products'">
-            <v-icon color="black lighten-1">
-              mdi-close
-            </v-icon>
-          </v-btn>
-          <v-toolbar-title>My Bucket</v-toolbar-title>
+          <v-toolbar-title>My Basket</v-toolbar-title>
         </v-toolbar>
-        <v-list two-line subheader>
-          <v-list-item>
-            <v-list-item-content>
-              <v-list-item-title>{{ business.displayName }}</v-list-item-title>
-              <v-list-item-subtitle>{{ business.tagLine }}</v-list-item-subtitle>
-            </v-list-item-content>
-            <v-list-item-avatar class="my-0 mx-0" color="grey darken-3">
-              <v-avatar color="teal">
-                <span class="white--text" v-text="$globals.customerInitial(business.displayName)" />
-              </v-avatar>
-            </v-list-item-avatar>
-          </v-list-item>
-        </v-list>
+        <Shop :business="business" />
       </v-card>
       <v-card v-if="products.length > 0" class="mt-2">
-        <v-list class="px-0">
+        <v-list class="px-0 pb-0">
+          <v-subheader class="mb-2 px-2" style="height:15px">Order Summary</v-subheader>
+          <v-divider />
           <template v-for="(item, index) in products">
             <v-subheader v-if="item.header" :key="item.header" v-text="item.header" />
             <Product
@@ -38,21 +23,25 @@
             />
             <v-divider :key="index" />
           </template>
-          <v-divider />
-          <v-subheader class="text-right">
-            <v-spacer />
-            Total:
-            <div class="font-weight-bold pl-2">
-              34,444<v-icon small class="mb-1">
+        </v-list>
+        <v-layout>
+          <v-flex xs6>
+            <v-card-subtitle>Sub Total</v-card-subtitle>
+          </v-flex>
+          <v-spacer />
+          <v-flex xs6>
+            <v-card-subtitle class="font-weight-bold text-right">
+              {{ totalAmount }} <v-icon small class="mb-1">
                 mdi-currency-inr
               </v-icon>
-            </div>
-          </v-subheader>
-        </v-list>
+            </v-card-subtitle>
+          </v-flex>
+        </v-layout>
         <v-divider />
         <v-card-text class="py-0 pt-1">
           <v-flex class="py-0" xs12>
             <v-textarea
+              v-model="description"
               placeholder="Any other special request, will pass it to shopkeeper..."
               append-icon="mdi-information"
               single-line
@@ -65,7 +54,7 @@
         <v-divider />
         <v-card-actions class="pt-0">
           <v-flex class="py-0" xs12>
-            <v-btn color="success" block dark>
+            <v-btn color="success" block dark @click.prevent="placeOrder">
               Place order
             </v-btn>
           </v-flex>
@@ -86,11 +75,13 @@
 
 <script>
 import Product from '@/components/product'
+import Shop from '@/components/shop'
 const _ = require('lodash')
 
 export default {
   components: {
-    Product
+    Product,
+    Shop
   },
   async asyncData ({ app, route }) {
     const data = {}
@@ -113,11 +104,17 @@ export default {
   data: () => ({
     products: [],
     search: '',
-    showCustomer: false
+    showCustomer: false,
+    shopKeeperId: '',
+    customerId: '',
+    description: ''
   }),
   computed: {
     business () {
       return _.first(this.$auth.state.shop) || {}
+    },
+    totalAmount () {
+      return this.$globals.formatNumber(_.sumBy(this.products, 'amount')) || 0
     }
   },
   methods: {
@@ -127,6 +124,21 @@ export default {
     deleteProduct (data) {
       this.products.splice(data.index, 1)
       return true
+    },
+    async placeOrder () {
+      const formData = {
+        customerId: this.customerId,
+        description: this.description
+      }
+      // eslint-disable-next-line no-unused-vars
+      const [error, response] = await this.$api.post(`ShopKeepers/${this.shopKeeperId}/placeOrder`, formData)
+      if (!error && response) {
+        window.getApp.$emit('SHOW_SUCCESS_MESSAGE', {
+          message: 'Order placed successfully!!!'
+        })
+        // reset the cart items
+        this.products = []
+      }
     }
   }
 }

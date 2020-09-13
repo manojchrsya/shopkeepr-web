@@ -13,40 +13,7 @@
             />
           </v-flex>
         </v-toolbar>
-        <v-list two-line subheader>
-          <v-list-item>
-            <v-list-item-content>
-              <v-list-item-title>{{ business.displayName }}</v-list-item-title>
-              <v-list-item-subtitle>{{ business.tagLine }}</v-list-item-subtitle>
-              <v-list-item-subtitle v-if="business.order && business.order.minimumAmount">
-                Minimun order with {{ $globals.formatNumber(business.order.minimumAmount) }} <v-icon small class="mb-1">
-                  mdi-currency-inr
-                </v-icon>
-              </v-list-item-subtitle>
-            </v-list-item-content>
-            <v-list-item-avatar class="my-0 mx-0" color="grey darken-3">
-              <v-avatar color="teal">
-                <span class="white--text" v-text="$globals.customerInitial(business.displayName)" />
-              </v-avatar>
-            </v-list-item-avatar>
-          </v-list-item>
-        </v-list>
-        <v-bottom-navigation color="tranparent">
-          <v-btn v-if="business.order && business.order.deliveryTime">
-            <span>{{ business.order.deliveryTime }}</span>
-            <v-icon>mdi-history</v-icon>
-          </v-btn>
-          <v-spacer />
-          <v-btn :href="getMobileNo">
-            <span>Call Now</span>
-            <v-icon>mdi-cellphone-basic</v-icon>
-          </v-btn>
-          <v-spacer />
-          <v-btn @click.prevent="bucketUrl()">
-            <span>Basket</span>
-            <v-icon>mdi-basket-outline</v-icon>
-          </v-btn>
-        </v-bottom-navigation>
+        <Shop :business="business" />
         <v-divider />
         <v-list v-if="products.length > 0" three-line class="px-0">
           <template v-for="(item, index) in products">
@@ -114,13 +81,15 @@ import {
   required, numeric, minLength, maxLength
 } from 'vuelidate/lib/validators'
 import Product from '@/components/product'
+import Shop from '@/components/shop'
 const _ = require('lodash')
 // eslint-disable-next-line no-useless-escape
 const mobileRegex = /^[6789]\d{9}$/
 
 export default {
   components: {
-    Product
+    Product,
+    Shop
   },
   async asyncData ({ app, route }) {
     const data = {}

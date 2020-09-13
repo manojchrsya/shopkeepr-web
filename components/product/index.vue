@@ -1,7 +1,7 @@
 <template>
   <v-list-item class="px-2">
     <!-- <v-list-item-icon class="mx-2">
-      <v-img :border-radius="10" :src="item.avatar" :max-height="60" :max-width="50" />
+      <v-img :border-radius="10" :src="'#'" :max-height="60" :max-width="50" />
     </v-list-item-icon> -->
     <v-list-item-content>
       <v-list-item-title v-text="product.title" />
@@ -20,11 +20,11 @@
       <v-list-item-title v-if="source === 'product'" class="font-weight-bold my-1  text-right">
         <v-menu>
           <template v-slot:activator="{ on, attrs }">
-            <v-btn class="px-1" small v-bind="attrs" v-on="on">
+            <v-btn class="px-1 info" small v-bind="attrs" v-on="on">
               <v-icon small> mdi-currency-inr</v-icon> {{ getPricePerUnit }}
             </v-btn>
           </template>
-          <v-list>
+          <v-list class="py-1">
             <v-list-item v-for="rate in product.price" :key="rate.unit" class="py-1" style="min-height:20px;">
               <v-list-item-title @click="updatePrice(rate)">
                 <v-icon small> mdi-currency-inr</v-icon> {{ $globals.formatNumber(rate.value) }} / {{ rate.unit }}
@@ -146,23 +146,22 @@ export default {
       const formData = {
         customerId: this.customerId,
         shopKeeperId: this.shopKeeperId,
-        productId: this.source === 'product' ? this.product.id : this.productId,
+        productId: this.source === 'product' ? this.product.id : this.product.productId,
         title: this.product.title,
         unit: this.unit,
         price: this.price,
         quantity: this.quantity
       }
+      this.$nuxt.$loading.start()
       // eslint-disable-next-line no-unused-vars
       const [error, response] = await this.$api.post(`Customers/${this.customerId}/updateBucket`, formData)
       if (!error && response) {
-        window.getApp.$emit('SHOW_SUCCESS_MESSAGE', {
-          message: 'Product updated in bucket.'
-        })
         this.product.amount = response.data.amount
         if (this.quantity <= 0 && this.source === 'bucket') {
           this.$emit('delete-bucket-product', { index: this.index })
         }
       }
+      this.$nuxt.$loading.finish()
       return true
     }
   }
