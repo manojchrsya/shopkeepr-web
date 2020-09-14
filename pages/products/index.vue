@@ -5,6 +5,18 @@
       <v-card flat class="mx-auto px-0">
         <Shop :business="business" :customer="customer" />
         <v-divider />
+        <v-flex xs12>
+          <v-text-field
+            v-model="search"
+            hide-details
+            append-icon="mdi-magnify"
+            solo="solo"
+            label="Find your product you wish to purchase..."
+            single-line="single-line"
+            class="mb-0"
+          />
+        </v-flex>
+        <v-divider />
         <v-list v-if="products.length > 0" three-line class="px-0">
           <template v-for="(item, index) in products">
             <v-subheader v-if="item.header" :key="item.header" v-text="item.header" />
