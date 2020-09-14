@@ -1,18 +1,8 @@
 <template>
   <v-layout row wrap align-center>
     <v-flex>
+      <Customer title="Your Orders" />
       <v-card flat class="mx-auto px-0">
-        <v-toolbar color="cyan">
-          <v-flex class="mt-7" xs12>
-            <v-text-field
-              v-model="search"
-              append-icon="mdi-magnify"
-              solo="solo"
-              label="Search orders..."
-              single-line="single-line"
-            />
-          </v-flex>
-        </v-toolbar>
         <Shop :business="business" />
         <v-divider />
         <v-list-item class="px-2">
@@ -46,23 +36,26 @@
 <script>
 import Shop from '@/components/shop'
 import Order from '@/components/order'
+import Customer from '@/components/customer'
 const _ = require('lodash')
 
 export default {
   components: {
     Shop,
-    Order
+    Order,
+    Customer
   },
   async asyncData ({ app, route }) {
     const data = {}
-    data.customerId = route.query.customerId || localStorage.getItem('customerId')
-    localStorage.setItem('customerId', data.customerId)
-    let shopKeeperId = route.query.shopKeeperId || localStorage.getItem('shopKeeperId')
-    if (app.$auth && app.$auth.$state && app.$auth.$state.shop) {
-      shopKeeperId = _.first(app.$auth.$state.shop).id
+    data.shopKeeperId = route.query.shopKeeperId
+    if (!data.shopKeeperId && localStorage.getItem('shopKeeperId') !== 'null') {
+      data.shopKeeperId = localStorage.getItem('shopKeeperId')
     }
-    data.shopKeeperId = shopKeeperId
-    localStorage.setItem('shopKeeperId', data.shopKeeperId)
+    if (app.$auth && app.$auth.$state && app.$auth.$state.shop) {
+      data.shopKeeperId = _.first(app.$auth.$state.shop).id
+    }
+    const customer = app.$globals.currentCustomer()
+    if (customer && customer.id) { data.customerId = customer.id }
     const [error, response] = await app.$api.get('ShopKeepers/getOrders', {
       params: { options: { customerId: data.customerId, orderType: 'open' } }
     })

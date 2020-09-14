@@ -1,10 +1,8 @@
 <template>
   <v-layout row wrap align-center>
     <v-flex>
+      <Customer title="My Shop Bucket" />
       <v-card class="mx-auto px-0">
-        <v-toolbar color="cyan">
-          <v-toolbar-title>My Basket</v-toolbar-title>
-        </v-toolbar>
         <Shop :business="business" />
       </v-card>
       <v-card v-if="products.length > 0" class="mt-2">
@@ -76,23 +74,26 @@
 <script>
 import Product from '@/components/product'
 import Shop from '@/components/shop'
+import Customer from '@/components/customer'
 const _ = require('lodash')
 
 export default {
   components: {
     Product,
-    Shop
+    Shop,
+    Customer
   },
   async asyncData ({ app, route }) {
     const data = {}
-    data.customerId = route.query.customerId || localStorage.getItem('customerId')
-    localStorage.setItem('customerId', data.customerId)
-    let shopKeeperId = route.query.shopKeeperId || localStorage.getItem('shopKeeperId')
-    if (app.$auth && app.$auth.$state && app.$auth.$state.shop) {
-      shopKeeperId = _.first(app.$auth.$state.shop).id
+    data.shopKeeperId = route.query.shopKeeperId
+    if (!data.shopKeeperId && localStorage.getItem('shopKeeperId') !== 'null') {
+      data.shopKeeperId = localStorage.getItem('shopKeeperId')
     }
-    data.shopKeeperId = shopKeeperId
-    localStorage.setItem('shopKeeperId', data.shopKeeperId)
+    if (app.$auth && app.$auth.$state && app.$auth.$state.shop) {
+      data.shopKeeperId = _.first(app.$auth.$state.shop).id
+    }
+    const customer = app.$globals.currentCustomer()
+    if (customer && customer.id) { data.customerId = customer.id }
     if (data.customerId && data.shopKeeperId) {
       const [error, response] = await app.$api.get(`Customers/${data.customerId}/getBucket`, {
         params: { options: { shopKeeperId: data.shopKeeperId } }

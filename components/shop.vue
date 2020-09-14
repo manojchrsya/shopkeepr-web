@@ -29,7 +29,7 @@
         <v-icon>mdi-cellphone-basic</v-icon>
       </v-btn>
       <v-spacer />
-      <v-btn :to="'/bucket'">
+      <v-btn :disabled="!(customer && customer.id)" :to="'/bucket'">
         <span>Basket</span>
         <v-icon>mdi-basket-outline</v-icon>
       </v-btn>
@@ -53,6 +53,9 @@ export default {
   computed: {
     getMobileNo () {
       return `tel:${this.business.mobile}`
+    },
+    customer () {
+      return this.$globals.currentCustomer()
     }
   }
 }

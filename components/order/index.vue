@@ -59,7 +59,7 @@ export default {
     }
   },
   data: () => ({
-    statusList: ['RECEIVED', 'ACCEPTED', 'CANCELLED', 'WORK_IN_PROGRESS', 'COMPLETED', 'DELIVERED', 'CLOSED']
+    statusList: ['RECEIVED', 'ACCEPTED', 'WORK_IN_PROGRESS', 'COMPLETED', 'DELIVERED', 'CLOSED', 'CANCELLED']
   }),
   computed: {
     orderStatus () {

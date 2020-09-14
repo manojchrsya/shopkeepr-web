@@ -108,8 +108,12 @@ export default {
     }
   },
   created () {
-    this.customerId = this.$route.query.customerId || localStorage.getItem('customerId')
-    this.shopKeeperId = this.$route.query.shopKeeperId || localStorage.getItem('shopKeeperId')
+    const customer = this.$globals.currentCustomer()
+    if (customer && customer.id) { this.customerId = customer.id }
+    this.shopKeeperId = this.$route.query.shopKeeperId
+    if (!this.shopKeeperId && localStorage.getItem('shopKeeperId') !== 'null') {
+      this.shopKeeperId = localStorage.getItem('shopKeeperId')
+    }
     if (this.$auth && this.$auth.state && this.$auth.state.shop) {
       this.shopKeeperId = _.first(this.$auth.state.shop).id
     }

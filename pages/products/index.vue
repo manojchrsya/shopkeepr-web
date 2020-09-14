@@ -1,19 +1,9 @@
 <template>
   <v-layout row wrap align-center>
     <v-flex>
+      <Customer title="Products Collection" />
       <v-card flat class="mx-auto px-0">
-        <v-toolbar color="cyan">
-          <v-flex class="mt-7" xs12>
-            <v-text-field
-              v-model="search"
-              append-icon="mdi-magnify"
-              solo="solo"
-              label="Search products..."
-              single-line="single-line"
-            />
-          </v-flex>
-        </v-toolbar>
-        <Shop :business="business" />
+        <Shop :business="business" :customer="customer" />
         <v-divider />
         <v-list v-if="products.length > 0" three-line class="px-0">
           <template v-for="(item, index) in products">
@@ -82,6 +72,7 @@ import {
 } from 'vuelidate/lib/validators'
 import Product from '@/components/product'
 import Shop from '@/components/shop'
+import Customer from '@/components/customer'
 const _ = require('lodash')
 // eslint-disable-next-line no-useless-escape
 const mobileRegex = /^[6789]\d{9}$/
@@ -89,22 +80,28 @@ const mobileRegex = /^[6789]\d{9}$/
 export default {
   components: {
     Product,
-    Shop
+    Shop,
+    Customer
   },
   async asyncData ({ app, route }) {
     const data = {}
-    data.customerId = route.query.customerId || localStorage.getItem('customerId')
-    localStorage.setItem('customerId', data.customerId)
-    let shopKeeperId = route.query.shopKeeperId || localStorage.getItem('shopKeeperId')
+    let shopKeeperId = route.query.shopKeeperId
+    if (!data.shopKeeperId && localStorage.getItem('shopKeeperId') !== 'null') {
+      data.shopKeeperId = localStorage.getItem('shopKeeperId')
+    }
     if (app.$auth && app.$auth.$state && app.$auth.$state.shop) {
       shopKeeperId = _.first(app.$auth.$state.shop).id
     }
-    data.shopKeeperId = shopKeeperId
-    localStorage.setItem('shopKeeperId', data.shopKeeperId)
-    const [error, response] = await app.$api.get(`ShopKeepers/${shopKeeperId}/getProducts`, {
-      params: { options: { customerId: data.customerId } }
-    })
-    if (!error) { data.products = response.data }
+    const customer = app.$globals.currentCustomer()
+    if (customer && customer.id) { data.customerId = customer.id }
+    if (shopKeeperId) {
+      data.shopKeeperId = shopKeeperId
+      localStorage.setItem('shopKeeperId', data.shopKeeperId)
+      const [error, response] = await app.$api.get(`ShopKeepers/${shopKeeperId}/getProducts`, {
+        params: { options: { customerId: customer.id } }
+      })
+      if (!error) { data.products = response.data }
+    }
     return { ...data }
   },
   data: () => ({
@@ -114,6 +111,7 @@ export default {
     shopKeeperId: '',
     showCustomer: false,
     customer: {
+      id: '',
       name: '',
       mobile: ''
     }
@@ -173,8 +171,9 @@ export default {
           this.$globals.showSuccessMessage('Profile save successfully.')
           this.customerId = response.data.id
           // save data in local storage
-          localStorage.setItem('customerId', this.customerId)
+          localStorage.setItem('customer', JSON.stringify(response.data))
           this.showCustomer = false
+          window.location.reload(true)
         } else {
           const errorMessage = _.has(error.response.data, 'error.message') ? error.response.data.error.message : ''
           this.$globals.showErrorMessage(errorMessage)

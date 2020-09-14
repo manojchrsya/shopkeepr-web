@@ -13,13 +13,18 @@ const showSuccessMessage = (message) => {
   window.getApp.$emit('SHOW_SUCCESS_MESSAGE', { message })
 }
 
+const currentCustomer = () => {
+  return JSON.parse(localStorage.getItem('customer')) || {}
+}
+
 export default function (ctx, inject) {
   const commonMethods = {
     customerInitial,
     formatNumber,
     _: lodash,
     showErrorMessage,
-    showSuccessMessage
+    showSuccessMessage,
+    currentCustomer
   }
   ctx.$globals = commonMethods
   inject('globals', commonMethods)

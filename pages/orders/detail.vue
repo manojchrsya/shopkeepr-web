@@ -96,15 +96,16 @@ export default {
   },
   async asyncData ({ app, route }) {
     const data = {}
-    data.customerId = route.query.customerId || localStorage.getItem('customerId')
-    localStorage.setItem('customerId', data.customerId)
-    let shopKeeperId = route.query.shopKeeperId || localStorage.getItem('shopKeeperId')
-    if (app.$auth && app.$auth.$state && app.$auth.$state.shop) {
-      shopKeeperId = _.first(app.$auth.$state.shop).id
+    data.shopKeeperId = route.query.shopKeeperId
+    if (!data.shopKeeperId && localStorage.getItem('shopKeeperId') !== 'null') {
+      data.shopKeeperId = localStorage.getItem('shopKeeperId')
     }
-    data.shopKeeperId = shopKeeperId
-    localStorage.setItem('shopKeeperId', data.shopKeeperId)
-    if (route.query && route.query.orderId) {
+    if (app.$auth && app.$auth.$state && app.$auth.$state.shop) {
+      data.shopKeeperId = _.first(app.$auth.$state.shop).id
+    }
+    const customer = app.$globals.currentCustomer()
+    if (customer && customer.id) { data.customerId = customer.id }
+    if (data.shopKeeperId && route.query && route.query.orderId) {
       data.orderId = route.query.orderId
       if (data.customerId && data.shopKeeperId) {
         const [error, response] = await app.$api.get('ShopKeepers/getOrderDetails', {
