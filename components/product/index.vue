@@ -4,9 +4,9 @@
       <v-img :border-radius="10" :src="'#'" :max-height="60" :max-width="50" />
     </v-list-item-icon> -->
     <v-list-item-content>
-      <v-list-item-title v-text="product.title" />
+      <v-list-item-title style="white-space: break-spaces;" v-text="product.title" />
       <v-list-item-subtitle v-if="source === 'product'" v-html="product.description" />
-      <v-list-item-subtitle v-else-if="source === 'bucket'">
+      <v-list-item-subtitle v-else-if="source === 'bucket'" class="mt-1">
         <v-menu>
           <template v-slot:activator="{ on, attrs }">
             <v-btn class="px-1 info" small v-bind="attrs" v-on="on">
@@ -16,8 +16,8 @@
         </v-menu>
       </v-list-item-subtitle>
     </v-list-item-content>
-    <v-list-item-action class="mx-0 mb-0 mt-1">
-      <v-list-item-title v-if="source === 'product'" class="font-weight-bold my-1  text-right">
+    <v-list-item-action v-if="source === 'product'" class="mx-0 mb-0 mt-1">
+      <v-list-item-title class="font-weight-bold my-1 text-right">
         <v-menu>
           <template v-slot:activator="{ on, attrs }">
             <v-btn class="px-1 info" small v-bind="attrs" v-on="on">
@@ -59,18 +59,44 @@
             </v-icon>
           </v-btn>
         </v-flex>
-        <v-flex v-if="source === 'bucket'" class="py-0 pl-3">
-          <v-list-item-title class="mt-1">
-            {{ $globals.formatNumber(product.amount) }}
-            <v-icon small class="mb-1">
-              mdi-currency-inr
-            </v-icon>
-          </v-list-item-title>
-        </v-flex>
       </v-layout>
       <v-layout v-else>
         <v-flex class="py-0">
           <v-btn color="success" small class="mt-2" @click="updateQuantity({type: 'plus'})"> ADD </v-btn>
+        </v-flex>
+      </v-layout>
+    </v-list-item-action>
+    <v-list-item-action v-else-if="source === 'bucket'" class="my-0">
+      <v-list-item-title class="mt-2 ml-3 font-weight-bold">
+        {{ $globals.formatNumber(product.amount) }}
+        <v-icon small class="mb-1 font-weight-bold">
+          mdi-currency-inr
+        </v-icon>
+      </v-list-item-title>
+      <v-layout v-if="quantity > 0">
+        <v-flex class="py-0">
+          <v-btn color="success" fab x-small class="mr-2" @click="updateQuantity({type: 'minus'})">
+            <v-icon class="mx-0">
+              mdi-minus
+            </v-icon>
+          </v-btn>
+        </v-flex>
+        <v-flex class="py-0">
+          <v-text-field
+            v-model="quantity"
+            dense
+            readonly
+            single-line
+            class="centered-input"
+            style="width: 20px;"
+          />
+        </v-flex>
+        <v-flex class="py-0">
+          <v-btn color="success" fab x-small class="ml-2" @click="updateQuantity({type: 'plus'})">
+            <v-icon class="mx-0">
+              mdi-plus
+            </v-icon>
+          </v-btn>
         </v-flex>
       </v-layout>
     </v-list-item-action>

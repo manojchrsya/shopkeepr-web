@@ -4,10 +4,6 @@ const CustomerDetail = () => import('~/pages/customers/detail').then(m => m.defa
 const AddCustomer = () => import('~/pages/customers/add').then(m => m.default || m)
 const Transactions = () => import('~/pages/transactions').then(m => m.default || m)
 const TransactionDetail = () => import('~/pages/transactions/detail').then(m => m.default || m)
-const Products = () => import('~/pages/products').then(m => m.default || m)
-const Bucket = () => import('~/pages/products/bucket').then(m => m.default || m)
-const Orders = () => import('~/pages/orders').then(m => m.default || m)
-const OrderDetail = () => import('~/pages/orders/detail').then(m => m.default || m)
 
 export default [
   {
@@ -39,25 +35,5 @@ export default [
     name: 'transactions/detail',
     path: '/transactions/detail',
     component: TransactionDetail
-  },
-  {
-    name: 'products',
-    path: '/products',
-    component: Products
-  },
-  {
-    name: 'bucket',
-    path: '/bucket',
-    component: Bucket
-  },
-  {
-    name: 'orders',
-    path: '/orders/list',
-    component: Orders
-  },
-  {
-    name: 'orders/detail',
-    path: '/orders/detail',
-    component: OrderDetail
   }
 ]

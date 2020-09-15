@@ -33,7 +33,15 @@
       </v-card>
       <v-card class="mx-auto px-0">
         <v-list subheader>
-          <v-subheader><strong>Business Details</strong></v-subheader>
+          <v-subheader>
+            <strong>Business Details</strong>
+            <v-spacer />
+            <v-btn icon :href="textMessage">
+              <v-icon color="black lighten-1">
+                mdi-share-outline
+              </v-icon>
+            </v-btn>
+          </v-subheader>
           <v-divider />
           <v-list-item
             v-for="(value, key) in business"
@@ -82,17 +90,14 @@
 const _ = require('lodash')
 
 export default {
-  data: () => ({
-    paymentOptions: ['Credit', 'Debit']
-  }),
   computed: {
     business () {
       const details = _.first(this.$auth.state.shop) || {}
       return {
         Name: details.displayName,
         Mobile: details.mobile,
-        'GST Number': details.gstNumber || '-',
-        'Pan Card': details.pancard || '-'
+        'Tag Line': details.tagLine || '-',
+        'Short URL': details.url || '-'
       }
     },
     customer () {
@@ -102,6 +107,13 @@ export default {
         Mobile: details.mobile,
         Email: details.email
       }
+    },
+    textMessage () {
+      const details = _.first(this.$auth.state.shop) || {}
+      if (details.sms && details.sms.share) {
+        return `sms:${details.sms.share}`
+      }
+      return ''
     }
   }
 }
