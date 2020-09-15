@@ -107,12 +107,10 @@ export default {
     if (customer && customer.id) { data.customerId = customer.id }
     if (data.shopKeeperId && route.query && route.query.orderId) {
       data.orderId = route.query.orderId
-      if (data.customerId && data.shopKeeperId) {
-        const [error, response] = await app.$api.get('ShopKeepers/getOrderDetails', {
-          params: { options: { orderId: data.orderId } }
-        })
-        if (!error) { data.order = response.data }
-      }
+      const [error, response] = await app.$api.get('ShopKeepers/getOrderDetails', {
+        params: { options: { orderId: data.orderId } }
+      })
+      if (!error) { data.order = response.data }
     }
     return { ...data }
   },
