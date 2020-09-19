@@ -17,8 +17,8 @@
           />
         </v-flex>
         <v-divider />
-        <v-list v-if="products.length > 0" three-line class="px-0">
-          <template v-for="(item, index) in products">
+        <v-list v-if="filterProducts.length > 0" three-line class="px-0">
+          <template v-for="(item, index) in filterProducts">
             <v-subheader v-if="item.header" :key="item.header" v-text="item.header" />
             <Product :key="item.id" :index="index" :product="item" @show-customer="openCustomerDialog" />
             <v-divider :key="index" />
@@ -134,6 +134,16 @@ export default {
     },
     getMobileNo () {
       return `tel:${this.business.mobile}`
+    },
+    filterProducts () {
+      const products = []
+      const search = this.search.toLowerCase()
+      this.products.forEach((product) => {
+        if (product.title.toLowerCase().includes(search) || product.description.toLowerCase().includes(search)) {
+          products.push(product)
+        }
+      })
+      return search !== '' ? products : this.products
     },
     nameErrors () {
       const errors = []

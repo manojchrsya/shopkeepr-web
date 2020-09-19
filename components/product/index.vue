@@ -1,9 +1,9 @@
 <template>
   <v-list-item class="px-2">
-    <!-- <v-list-item-icon class="mx-2">
-      <v-img :border-radius="10" :src="'#'" :max-height="60" :max-width="50" />
-    </v-list-item-icon> -->
-    <v-list-item-content>
+    <v-list-item-icon v-if="product.images && product.images.length > 0" class="mr-2 my-2" @click="showCarousel = true">
+      <v-img :border-radius="10" :src="getProductImage" :max-width="50" />
+    </v-list-item-icon>
+    <v-list-item-content class="pt-0">
       <v-list-item-title style="white-space: break-spaces;" v-text="product.title" />
       <v-list-item-subtitle v-if="source === 'product'" v-html="product.description" />
       <v-list-item-subtitle v-else-if="source === 'bucket'" class="mt-1">
@@ -100,6 +100,17 @@
         </v-flex>
       </v-layout>
     </v-list-item-action>
+    <v-dialog v-if="product.images && product.images.length > 0" v-model="showCarousel" max-width="290">
+      <v-carousel cycle height="400" :show-arrows="false">
+        <v-carousel-item
+          v-for="image in product.images"
+          :key="image.id"
+          :src="image.url"
+          reverse-transition="fade-transition"
+          transition="fade-transition"
+        />
+      </v-carousel>
+    </v-dialog>
   </v-list-item>
 </template>
 
@@ -126,11 +137,17 @@ export default {
     unit: 'UNT',
     price: 0,
     customerId: '',
-    shopKeeperId: ''
+    shopKeeperId: '',
+    showCarousel: false,
+    colors: ['indigo', 'warning', 'pink darken-2', 'red lighten-1', 'deep-purple accent-4'],
+    slides: ['First', 'Second', 'Third', 'Fourth', 'Fifth']
   }),
   computed: {
     getPricePerUnit () {
       return `${this.$globals.formatNumber(this.price)} / ${this.unit}`
+    },
+    getProductImage () {
+      return _.first(this.product.images).url
     }
   },
   created () {
