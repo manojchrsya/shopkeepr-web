@@ -26,7 +26,7 @@
                       <v-icon right class="ml-0">mdi-chevron-down</v-icon>
                     </v-btn>
                   </template>
-                  <v-list class="py-1">
+                  <v-list v-if="isShopKeeper" class="py-1">
                     <template v-for="(status, statusIndex) in statusList">
                       <v-list-item :key="status" class="py-1" style="min-height:20px;" @click.prevent="updateStatus(status)">
                         <v-list-item-title>{{ status.split('_').join(' ') }}</v-list-item-title>
@@ -96,16 +96,7 @@ export default {
   },
   async asyncData ({ app, route }) {
     const data = {}
-    data.shopKeeperId = route.query.shopKeeperId
-    if (!data.shopKeeperId && localStorage.getItem('shopKeeperId') !== 'null') {
-      data.shopKeeperId = localStorage.getItem('shopKeeperId')
-    }
-    if (app.$auth && app.$auth.$state && app.$auth.$state.shop) {
-      data.shopKeeperId = _.first(app.$auth.$state.shop).id
-    }
-    const customer = app.$globals.currentCustomer()
-    if (customer && customer.id) { data.customerId = customer.id }
-    if (data.shopKeeperId && route.query && route.query.orderId) {
+    if (route.query && route.query.orderId) {
       data.orderId = route.query.orderId
       const [error, response] = await app.$api.get('ShopKeepers/getOrderDetails', {
         params: { options: { orderId: data.orderId } }
@@ -122,13 +113,17 @@ export default {
   }),
   computed: {
     business () {
-      return _.first(this.$auth.state.shop) || {}
+      return this.$auth.state.shop || {}
     },
     totalAmount () {
       return this.$globals.formatNumber(_.sumBy(this.order.lineItems, 'amount')) || 0
     },
     orderStatus () {
       return this.order.status === 'WORK_IN_PROGRESS' ? 'WIP' : this.order.status
+    },
+    isShopKeeper () {
+      const role = this.$auth && this.$auth.user && _.first(_.map(this.$auth.user.roles, 'name'))
+      return role === '$sk-admin'
     }
   },
   methods: {

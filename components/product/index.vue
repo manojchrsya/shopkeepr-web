@@ -62,7 +62,7 @@
       </v-layout>
       <v-layout v-else>
         <v-flex class="py-0">
-          <v-btn color="success" small class="mt-2" @click="updateQuantity({type: 'plus'})"> ADD </v-btn>
+          <v-btn color="success" :disabled="isShopKeeper" small class="mt-2" @click="updateQuantity({type: 'plus'})"> ADD </v-btn>
         </v-flex>
       </v-layout>
     </v-list-item-action>
@@ -92,7 +92,13 @@
           />
         </v-flex>
         <v-flex class="py-0">
-          <v-btn color="success" fab x-small class="ml-2" @click="updateQuantity({type: 'plus'})">
+          <v-btn
+            color="success"
+            fab
+            x-small
+            class="ml-2"
+            @click="updateQuantity({type: 'plus'})"
+          >
             <v-icon class="mx-0">
               mdi-plus
             </v-icon>
@@ -148,17 +154,19 @@ export default {
     },
     getProductImage () {
       return _.first(this.product.images).url
+    },
+    isShopKeeper () {
+      const role = this.$auth && this.$auth.user && _.first(_.map(this.$auth.user.roles, 'name'))
+      return (role === '$sk-admin')
     }
   },
   created () {
-    const customer = this.$globals.currentCustomer()
-    if (customer && customer.id) { this.customerId = customer.id }
-    this.shopKeeperId = this.$route.query.shopKeeperId
-    if (!this.shopKeeperId && localStorage.getItem('shopKeeperId') !== 'null') {
-      this.shopKeeperId = localStorage.getItem('shopKeeperId')
-    }
     if (this.$auth && this.$auth.state && this.$auth.state.shop) {
-      this.shopKeeperId = _.first(this.$auth.state.shop).id
+      this.shopKeeperId = this.$auth.state.shop.id
+      const { customer } = this.$auth.state.shop
+      if (customer && customer.id) {
+        this.customerId = customer.id
+      }
     }
     this.quantity = this.product.quantity || 0
     this.unit = this.product.unit

@@ -14,7 +14,7 @@ const showSuccessMessage = (message) => {
 }
 
 const currentCustomer = () => {
-  return JSON.parse(localStorage.getItem('customer')) || {}
+  return {}
 }
 
 export default function (ctx, inject) {

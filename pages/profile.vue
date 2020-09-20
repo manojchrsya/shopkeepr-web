@@ -87,12 +87,11 @@
 </template>
 
 <script>
-const _ = require('lodash')
 
 export default {
   computed: {
     business () {
-      const details = _.first(this.$auth.state.shop) || {}
+      const details = this.$auth.state.shop || {}
       return {
         Name: details.displayName,
         Mobile: details.mobile,
@@ -109,7 +108,7 @@ export default {
       }
     },
     textMessage () {
-      const details = _.first(this.$auth.state.shop) || {}
+      const details = this.$auth.state.shop || {}
       if (details.sms && details.sms.share) {
         return `sms:?&body=${details.sms.share}`
       }

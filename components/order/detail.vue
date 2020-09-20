@@ -3,15 +3,15 @@
     <v-list-item-content>
       <v-list-item-title v-text="order.title" />
     </v-list-item-content>
-    <v-list-item-content>
-      <v-list-item-subtitle>
-        <v-btn class="px-1 info" small>{{ order.quantity }} {{ order.unit }}</v-btn>
-      </v-list-item-subtitle>
-    </v-list-item-content>
     <v-list-item-action>
       <v-layout>
         <v-flex class="py-0 pl-3">
-          <v-list-item-title class="font-weight-bold">
+          <v-list-item-subtitle>
+            <v-btn class="px-1 info" small>{{ order.quantity }} {{ order.unit }}</v-btn>
+          </v-list-item-subtitle>
+        </v-flex>
+        <v-flex class="py-0 pl-5">
+          <v-list-item-title class="font-weight-bold pt-1">
             {{ $globals.formatNumber(order.amount) }}
             <v-icon small class="mb-1">
               mdi-currency-inr

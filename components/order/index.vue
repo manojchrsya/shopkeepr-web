@@ -22,7 +22,7 @@
               <v-icon right class="ml-0">mdi-chevron-down</v-icon>
             </v-btn>
           </template>
-          <v-list class="py-1">
+          <v-list v-if="isShopKeeper" class="py-1">
             <template v-for="(status, statusIndex) in statusList">
               <v-list-item :key="status" class="py-1" style="min-height:20px;" @click.prevent="updateStatus(status)">
                 <v-list-item-title>{{ status.split('_').join(' ') }}</v-list-item-title>
@@ -47,6 +47,8 @@
 </template>
 
 <script>
+import _ from 'lodash'
+
 export default {
   props: {
     order: {
@@ -64,6 +66,10 @@ export default {
   computed: {
     orderStatus () {
       return this.order.status === 'WORK_IN_PROGRESS' ? 'WIP' : this.order.status
+    },
+    isShopKeeper () {
+      const role = this.$auth && this.$auth.user && _.first(_.map(this.$auth.user.roles, 'name'))
+      return role === '$sk-admin'
     }
   },
   methods: {

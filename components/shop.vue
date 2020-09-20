@@ -55,7 +55,7 @@ export default {
       return `tel:${this.business.mobile}`
     },
     customer () {
-      return this.$globals.currentCustomer()
+      return this.$auth.$state.shop && this.$auth.$state.shop.customer
     }
   }
 }

@@ -27,7 +27,7 @@
         </template>
       </v-snackbar>
     </v-main>
-    <v-footer class="px-0 py-0">
+    <v-footer v-if="isShopKeeper" class="px-0 py-0">
       <v-bottom-navigation v-model="bottomNav" grow light fixed app>
         <v-btn :to="'/dashboard'">
           <span>Dashboard</span>
@@ -51,6 +51,7 @@
 </template>
 
 <script>
+import _ from 'lodash'
 import AppEvents from '@/util/event'
 
 export default {
@@ -62,6 +63,12 @@ export default {
         text: '',
         color: ''
       }
+    }
+  },
+  computed: {
+    isShopKeeper () {
+      const role = this.$auth && this.$auth.user && _.first(_.map(this.$auth.user.roles, 'name'))
+      return role === '$sk-admin'
     }
   },
   created () {

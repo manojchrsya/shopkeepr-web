@@ -37,7 +37,6 @@
 import Shop from '@/components/shop'
 import Order from '@/components/order'
 import Customer from '@/components/customer'
-const _ = require('lodash')
 
 export default {
   components: {
@@ -47,17 +46,8 @@ export default {
   },
   async asyncData ({ app, route }) {
     const data = {}
-    data.shopKeeperId = route.query.shopKeeperId
-    if (!data.shopKeeperId && localStorage.getItem('shopKeeperId') !== 'null') {
-      data.shopKeeperId = localStorage.getItem('shopKeeperId')
-    }
-    if (app.$auth && app.$auth.$state && app.$auth.$state.shop) {
-      data.shopKeeperId = _.first(app.$auth.$state.shop).id
-    }
-    const customer = app.$globals.currentCustomer()
-    if (customer && customer.id) { data.customerId = customer.id }
     const [error, response] = await app.$api.get('ShopKeepers/getOrders', {
-      params: { options: { customerId: data.customerId, orderType: 'open' } }
+      params: { options: { orderType: 'open' } }
     })
     if (!error) { data.orders = response.data }
     return { ...data }
@@ -65,13 +55,11 @@ export default {
   data: () => ({
     orders: [],
     search: '',
-    customerId: '',
-    shopKeeperId: '',
     orderType: 'open'
   }),
   computed: {
     business () {
-      return _.first(this.$auth.state.shop) || {}
+      return this.$auth.state.shop || {}
     }
   },
   methods: {
@@ -80,8 +68,6 @@ export default {
     },
     async filterOrders () {
       const formData = {
-        shopKeeperId: this.shopKeeperId,
-        customerId: this.customerId,
         orderType: this.orderType
       }
       const [error, response] = await this.$api.get('ShopKeepers/getOrders', {

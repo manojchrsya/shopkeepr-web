@@ -85,19 +85,13 @@ export default {
   },
   async asyncData ({ app, route }) {
     const data = {}
-    data.shopKeeperId = route.query.shopKeeperId
-    if (!data.shopKeeperId && localStorage.getItem('shopKeeperId') !== 'null') {
-      data.shopKeeperId = localStorage.getItem('shopKeeperId')
-    }
     if (app.$auth && app.$auth.$state && app.$auth.$state.shop) {
-      data.shopKeeperId = _.first(app.$auth.$state.shop).id
+      data.shopKeeperId = app.$auth.$state.shop.id
+      const { customer } = app.$auth.$state.shop
+      if (customer && customer.id) { data.customerId = customer.id }
     }
-    const customer = app.$globals.currentCustomer()
-    if (customer && customer.id) { data.customerId = customer.id }
     if (data.customerId && data.shopKeeperId) {
-      const [error, response] = await app.$api.get(`Customers/${data.customerId}/getBucket`, {
-        params: { options: { shopKeeperId: data.shopKeeperId } }
-      })
+      const [error, response] = await app.$api.get(`Customers/${data.customerId}/getBucket`)
       if (!error) { data.products = response.data }
     }
     return { ...data }
@@ -112,7 +106,7 @@ export default {
   }),
   computed: {
     business () {
-      return _.first(this.$auth.state.shop) || {}
+      return this.$auth.state.shop || {}
     },
     totalAmount () {
       return this.$globals.formatNumber(_.sumBy(this.products, 'amount')) || 0
