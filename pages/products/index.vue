@@ -99,9 +99,9 @@ export default {
     const data = {}
     if (app.$auth && app.$auth.$state && app.$auth.$state.shop) {
       data.shopKeeperId = app.$auth.$state.shop.id
+      const { customer } = app.$auth.$state.shop
+      if (customer && customer.id) { data.customerId = customer.id }
     }
-    const customer = app.$globals.currentCustomer()
-    if (customer && customer.id) { data.customerId = customer.id }
     if (data.shopKeeperId) {
       const [error, response] = await app.$api.get(`ShopKeepers/${data.shopKeeperId}/getProducts`)
       if (!error) { data.products = response.data }
