@@ -24,12 +24,24 @@
             <v-divider :key="index" />
           </template>
         </v-list>
-        <v-list-item v-else>
-          <v-list-item-content>
-            <v-list-item-title style="text-align:center;">
-              No Product found.
-            </v-list-item-title>
-          </v-list-item-content>
+        <v-list-item style="position: relative">
+          <v-list-item-title v-if="filterProducts.length === 0" class="text-center">
+            No Products found.
+          </v-list-item-title>
+          <v-spacer />
+          <v-btn
+            v-if="isShopKeeper"
+            :to="'/products/edit'"
+            color="success"
+            bottom
+            right
+            fab
+            small
+            fixed
+            style="bottom: 12%;"
+          >
+            <v-icon>mdi-plus</v-icon>
+          </v-btn>
         </v-list-item>
       </v-card>
       <v-dialog v-model="showCustomer" persistent max-width="290">
@@ -149,6 +161,10 @@ export default {
       if (!this.$v.customer.mobile.required) { errors.push('Name is required.') }
       if (!this.$v.customer.mobile.isValidMobileNumber) { errors.push('Invalid Mobile.') }
       return errors
+    },
+    isShopKeeper () {
+      const role = this.$auth && this.$auth.user && _.first(_.map(this.$auth.user.roles, 'name'))
+      return (role === '$sk-admin')
     }
   },
   methods: {

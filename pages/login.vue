@@ -5,6 +5,30 @@
         <v-layout row wrap align-center>
           <v-flex>
             <v-card class="mx-auto px-0" flat>
+              <v-card-subtitle class="h5 font-weight-bold">
+                Enter Shopkeeper Code directly.
+              </v-card-subtitle>
+              <v-card-text>
+                <v-layout>
+                  <v-flex class="py-0">
+                    <v-text-field
+                      v-model="model.code"
+                      label="ShopKeeper Code"
+                      solo
+                      append-icon="mdi-arrow-right"
+                      dense
+                      single-line
+                      :error-messages="codeErrors"
+                      @click:append="login({ anonymous: true })"
+                    />
+                  </v-flex>
+                </v-layout>
+              </v-card-text>
+              <v-row align="center">
+                <v-divider /><span class="font-weight-bold">OR</span><v-divider />
+              </v-row>
+            </v-card>
+            <v-card class="mx-auto px-0" flat>
               <v-card-title class="headline mb-2 font-weight-bold">
                 Login
               </v-card-title>
@@ -47,30 +71,6 @@
                   </v-btn>
                 </v-flex>
               </v-card-actions>
-            </v-card>
-            <v-card class="mx-auto px-0" flat>
-              <v-row align="center">
-                <v-divider /><span class="font-weight-bold">OR</span><v-divider />
-              </v-row>
-              <v-card-subtitle class="h5 font-weight-bold">
-                Enter Shopkeeper Code directly.
-              </v-card-subtitle>
-              <v-card-text>
-                <v-layout>
-                  <v-flex class="py-0">
-                    <v-text-field
-                      v-model="model.code"
-                      label="ShopKeeper Code"
-                      solo
-                      append-icon="mdi-arrow-right"
-                      dense
-                      single-line
-                      :error-messages="codeErrors"
-                      @click:append="login({ anonymous: true })"
-                    />
-                  </v-flex>
-                </v-layout>
-              </v-card-text>
             </v-card>
           </v-flex>
         </v-layout>

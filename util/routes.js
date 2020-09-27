@@ -1,11 +1,11 @@
 const Profile = () => import('~/pages/profile').then(m => m.default || m)
-
 const ListCustomer = () => import('~/pages/customers').then(m => m.default || m)
 const CustomerDetail = () => import('~/pages/customers/detail').then(m => m.default || m)
 const AddCustomer = () => import('~/pages/customers/add').then(m => m.default || m)
 const Transactions = () => import('~/pages/transactions').then(m => m.default || m)
 const TransactionDetail = () => import('~/pages/transactions/detail').then(m => m.default || m)
 const Products = () => import('~/pages/products').then(m => m.default || m)
+const EditProduct = () => import('~/pages/products/edit').then(m => m.default || m)
 const Bucket = () => import('~/pages/products/bucket').then(m => m.default || m)
 const Orders = () => import('~/pages/orders').then(m => m.default || m)
 const OrderDetail = () => import('~/pages/orders/detail').then(m => m.default || m)
@@ -45,6 +45,11 @@ export default [
     name: 'products',
     path: '/products',
     component: Products
+  },
+  {
+    name: 'products/edit',
+    path: '/products/edit',
+    component: EditProduct
   },
   {
     name: 'bucket',

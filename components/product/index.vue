@@ -60,6 +60,11 @@
           </v-btn>
         </v-flex>
       </v-layout>
+      <v-layout v-else-if="isShopKeeper">
+        <v-flex class="py-0">
+          <v-btn :color="product.status === 'ACTIVE' ? 'success' : 'error'" small class="mt-2" :to="'/products/edit?id='+product.id"> EDIT </v-btn>
+        </v-flex>
+      </v-layout>
       <v-layout v-else>
         <v-flex class="py-0">
           <v-btn color="success" :disabled="isShopKeeper" small class="mt-2" @click="updateQuantity({type: 'plus'})"> ADD </v-btn>
@@ -191,7 +196,9 @@ export default {
     async updatePrice (rate) {
       this.unit = rate.unit
       this.price = rate.value
-      await this.addToBucket()
+      if (!this.isShopKeeper) {
+        await this.addToBucket()
+      }
     },
     async addToBucket () {
       if (!this.customerId) {
