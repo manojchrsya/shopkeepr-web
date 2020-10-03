@@ -29,9 +29,13 @@
         <v-icon>mdi-cellphone-basic</v-icon>
       </v-btn>
       <v-spacer />
-      <v-btn :disabled="!(customer && customer.id)" :to="'/bucket'">
+      <v-btn v-if="(customer && customer.id)" :to="'/bucket'">
         <span>Basket</span>
         <v-icon>mdi-basket-outline</v-icon>
+      </v-btn>
+      <v-btn v-else :href="textMessage">
+        <span>Share</span>
+        <v-icon>mdi-share-outline</v-icon>
       </v-btn>
       <v-spacer />
       <v-btn :to="'/orders/list'">
@@ -56,6 +60,13 @@ export default {
     },
     customer () {
       return this.$auth.$state.shop && this.$auth.$state.shop.customer
+    },
+    textMessage () {
+      const details = this.$auth.state.shop || {}
+      if (details.sms && details.sms.share) {
+        return `sms:?&body=${details.sms.share}`
+      }
+      return ''
     }
   }
 }

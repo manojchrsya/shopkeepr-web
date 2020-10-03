@@ -9,6 +9,10 @@
             </v-icon>
           </v-btn>
           <v-toolbar-title>{{ customer.name }}</v-toolbar-title>
+          <v-spacer />
+          <v-btn icon :href="textMessage">
+            <v-icon>mdi-share-outline</v-icon>
+          </v-btn>
         </v-toolbar>
         <v-list-item three-line class="mt-2">
           <v-list-item-content v-if="customer.summary.dueAmount > 0" class="pb-0">
@@ -198,6 +202,13 @@ export default {
       if (!this.$v.payment.remarks.$dirty) { return errors }
       if (!this.$v.payment.remarks.required) { errors.push('Remarks is required.') }
       return errors
+    },
+    textMessage () {
+      const details = this.$auth.state.shop || {}
+      if (details.sms && details.sms.share) {
+        return `sms://${this.customer.mobile || ''}?&body=${details.sms.share}`
+      }
+      return ''
     }
   },
   methods: {

@@ -5,6 +5,13 @@
       <v-card flat class="mx-auto px-0">
         <Shop :business="business" :customer="customer" />
         <v-divider />
+        <v-flex v-if="categoryList.length > 0" xs12>
+          <v-chip-group v-model="categories" multiple active-class="primary--text">
+            <v-chip v-for="category in categoryList" :key="category" :value="category">
+              <strong>{{ category }}</strong>
+            </v-chip>
+          </v-chip-group>
+        </v-flex>
         <v-flex xs12>
           <v-text-field
             v-model="search"
@@ -17,15 +24,15 @@
           />
         </v-flex>
         <v-divider />
-        <v-list v-if="filterProducts.length > 0" three-line class="px-0">
-          <template v-for="(item, index) in filterProducts">
+        <v-list v-if="products.length > 0" three-line class="px-0">
+          <template v-for="(item, index) in products">
             <v-subheader v-if="item.header" :key="item.header" v-text="item.header" />
             <Product :key="item.id" :index="index" :product="item" @show-customer="openCustomerDialog" />
             <v-divider :key="index" />
           </template>
         </v-list>
-        <v-list-item style="position: relative">
-          <v-list-item-title v-if="filterProducts.length === 0" class="text-center">
+        <v-list-item v-intersect="onIntersect" style="position: relative">
+          <v-list-item-title v-if="products.length === 0" class="text-center">
             No Products found.
           </v-list-item-title>
           <v-spacer />
@@ -107,16 +114,12 @@ export default {
     Shop,
     Customer
   },
-  async asyncData ({ app, route }) {
+  asyncData ({ app, route }) {
     const data = {}
     if (app.$auth && app.$auth.$state && app.$auth.$state.shop) {
       data.shopKeeperId = app.$auth.$state.shop.id
       const { customer } = app.$auth.$state.shop
       if (customer && customer.id) { data.customerId = customer.id }
-    }
-    if (data.shopKeeperId) {
-      const [error, response] = await app.$api.get(`ShopKeepers/${data.shopKeeperId}/getProducts`)
-      if (!error) { data.products = response.data }
     }
     return { ...data }
   },
@@ -130,25 +133,34 @@ export default {
       id: '',
       name: '',
       mobile: ''
-    }
+    },
+    isLoaded: false,
+    pagination: {
+      limit: 20,
+      page: 1
+    },
+    categories: []
   }),
   computed: {
     business () {
       return this.$auth.state.shop || {}
     },
+    categoryList () {
+      return _.get(this.$auth.state.shop, 'categories') || []
+    },
     getMobileNo () {
       return `tel:${this.business.mobile}`
     },
-    filterProducts () {
-      const products = []
-      const search = this.search.toLowerCase()
-      this.products.forEach((product) => {
-        if (product.title.toLowerCase().includes(search) || product.description.toLowerCase().includes(search)) {
-          products.push(product)
-        }
-      })
-      return search !== '' ? products : this.products
-    },
+    // filterProducts () {
+    //   const products = []
+    //   const search = this.search.toLowerCase()
+    //   this.products.forEach((product) => {
+    //     if (product.title.toLowerCase().includes(search) || product.description.toLowerCase().includes(search)) {
+    //       products.push(product)
+    //     }
+    //   })
+    //   return search !== '' ? products : this.products
+    // },
     nameErrors () {
       const errors = []
       if (!this.$v.customer.name.$dirty) { return errors }
@@ -166,6 +178,23 @@ export default {
       const role = this.$auth && this.$auth.user && _.first(_.map(this.$auth.user.roles, 'name'))
       return (role === '$sk-admin')
     }
+  },
+  watch: {
+    async categories (values) {
+      this.pagination.page = 1
+      this.products = []
+      this.isLoaded = false
+      await this.loadProducts()
+    },
+    search: _.debounce(async function () {
+      this.pagination.page = 1
+      this.products = []
+      this.isLoaded = false
+      await this.loadProducts()
+    }, 500)
+  },
+  async created () {
+    await this.loadProducts()
   },
   methods: {
     openCustomerDialog () {
@@ -188,6 +217,22 @@ export default {
       }
       return 0
     },
+    async loadProducts () {
+      if (this.isLoaded) { return false }
+      const options = {
+        limit: this.pagination.limit,
+        categories: this.categories,
+        q: this.search.toLowerCase(),
+        skip: (this.pagination.page - 1) * this.pagination.limit
+      }
+      const [error, response] = await this.$api.get(`ShopKeepers/${this.shopKeeperId}/getProducts`, { params: { options } })
+      if (!error) {
+        if (response.data && response.data.length === 0) {
+          this.isLoaded = true
+        }
+        this.products = this.products.concat(response.data)
+      }
+    },
     async getCustomerId () {
       this.$v.customer.$touch()
       if (!this.$v.customer.$invalid) {
@@ -208,6 +253,12 @@ export default {
           const errorMessage = _.has(error.response.data, 'error.message') ? error.response.data.error.message : ''
           this.$globals.showErrorMessage(errorMessage)
         }
+      }
+    },
+    async onIntersect (entries, observer, isIntersecting) {
+      if (isIntersecting) {
+        this.pagination.page += 1
+        await this.loadProducts()
       }
     }
   },

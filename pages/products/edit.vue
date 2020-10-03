@@ -74,6 +74,19 @@
               />
             </v-flex>
           </v-layout>
+          <v-layout>
+            <v-flex class="py-0" xs12>
+              <v-combobox
+                v-model="categories"
+                :items="categoryList"
+                dense
+                solo
+                label="Category"
+                multiple
+                chips
+              />
+            </v-flex>
+          </v-layout>
         </v-card-text>
         <v-card-actions class="pt-0">
           <v-flex class="py-0" xs12>
@@ -142,6 +155,7 @@ export default {
     description: '',
     price: [{ value: 0, unit: 'UNT' }],
     unit: '',
+    categories: [],
     status: 'ACTIVE',
     images: [],
     isUploading: false,
@@ -165,6 +179,9 @@ export default {
     },
     usedUnits () {
       return _.map(this.price, 'unit')
+    },
+    categoryList () {
+      return _.get(this.$auth.state.shop, 'categories') || []
     }
   },
   methods: {
@@ -225,6 +242,7 @@ export default {
           description: this.description,
           price: this.price.filter(data => data.unit),
           unit: this.unit,
+          categories: this.categories,
           status: this.status
         }
         let productPromise = ''
