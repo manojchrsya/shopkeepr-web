@@ -6,7 +6,7 @@ Vue.use(Router)
 const Login = () => import('~/pages/login').then(m => m.default || m)
 const SignUp = () => import('~/pages/signup').then(m => m.default || m)
 const ErrorPage = () => import('~/layouts/error').then(m => m.default || m)
-const Dashboard = () => import('~/pages/dashboard').then(m => m.default || m)
+
 const router = new Router({
   mode: 'history',
   routes: [{
@@ -18,11 +18,6 @@ const router = new Router({
     path: '/signup',
     name: 'signup',
     component: SignUp
-  },
-  {
-    path: '/dashboard',
-    name: 'dashboard',
-    component: Dashboard
   },
   {
     path: '/login',

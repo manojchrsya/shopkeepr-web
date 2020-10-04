@@ -1,4 +1,5 @@
 const Profile = () => import('~/pages/profile').then(m => m.default || m)
+const Dashboard = () => import('~/pages/dashboard').then(m => m.default || m)
 const ListCustomer = () => import('~/pages/customers').then(m => m.default || m)
 const CustomerDetail = () => import('~/pages/customers/detail').then(m => m.default || m)
 const AddCustomer = () => import('~/pages/customers/add').then(m => m.default || m)
@@ -15,6 +16,11 @@ export default [
     name: 'profile',
     path: '/profile',
     component: Profile
+  },
+  {
+    path: '/dashboard',
+    name: 'dashboard',
+    component: Dashboard
   },
   {
     name: 'customers/list',

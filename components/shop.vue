@@ -29,16 +29,16 @@
         <v-icon>mdi-cellphone-basic</v-icon>
       </v-btn>
       <v-spacer />
-      <v-btn v-if="(customer && customer.id)" :to="'/bucket'">
-        <span>Basket</span>
-        <v-icon>mdi-basket-outline</v-icon>
-      </v-btn>
-      <v-btn v-else :href="textMessage">
+      <v-btn v-if="isShopKeeper" :href="textMessage">
         <span>Share</span>
         <v-icon>mdi-share-outline</v-icon>
       </v-btn>
+      <v-btn v-else :disabled="!(customer && customer.id)" :to="'/bucket'">
+        <span>Basket</span>
+        <v-icon>mdi-basket-outline</v-icon>
+      </v-btn>
       <v-spacer />
-      <v-btn :to="'/orders/list'">
+      <v-btn :disabled="!(isShopKeeper || (customer && customer.id))" :to="'/orders/list'">
         <span>Orders</span>
         <v-icon>mdi-clipboard-text-multiple</v-icon>
       </v-btn>
@@ -47,6 +47,8 @@
 </template>
 
 <script>
+const _ = require('lodash')
+
 export default {
   props: {
     business: {
@@ -67,6 +69,10 @@ export default {
         return `sms:?&body=${details.sms.share}`
       }
       return ''
+    },
+    isShopKeeper () {
+      const role = this.$auth && this.$auth.user && _.first(_.map(this.$auth.user.roles, 'name'))
+      return role === '$sk-admin'
     }
   }
 }
