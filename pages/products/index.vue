@@ -114,12 +114,21 @@ export default {
     Shop,
     Customer
   },
-  asyncData ({ app, route }) {
+  async asyncData ({ app, route }) {
     const data = {}
     if (app.$auth && app.$auth.$state && app.$auth.$state.shop) {
       data.shopKeeperId = app.$auth.$state.shop.id
       const { customer } = app.$auth.$state.shop
       if (customer && customer.id) { data.customerId = customer.id }
+    }
+    // update new shopkeeper id in token
+    if (route.query && route.query.code) {
+      const [error, response] = await app.$api.post('SkUsers/updateAnonymousToken', {
+        code: route.query.code
+      })
+      if (!error && response) {
+        window.location.href = '/products'
+      }
     }
     return { ...data }
   },
