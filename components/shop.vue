@@ -66,7 +66,7 @@ export default {
     textMessage () {
       const details = this.$auth.state.shop || {}
       if (details.sms && details.sms.share) {
-        return `sms:?&body=${details.sms.share}`
+        return `sms:?&body=${encodeURI(details.sms.share)}`
       }
       return ''
     },
