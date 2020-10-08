@@ -1,19 +1,16 @@
 import * as firebase from 'firebase/app'
 import 'firebase/messaging'
-// import * as _ from 'lodash'
-// import util from '@/util'
 const fcmConfig = require('@/fcm.config.js')
 
 export default function (ctx, inject) {
   class Firebase {
     constructor () {
-      // eslint-disable-next-line
-      console.log(fcmConfig);
       firebase.initializeApp(fcmConfig)
       this.messaging = firebase.messaging()
       // this.messaging.usePublicVapidKey(process.env.firebaseVapidKey)
       // this.messaging.onTokenRefresh(this.onTokenRefresh)
       // this.messaging.onMessage(this.onMessage)
+      // this.saveToken()
     }
 
     // onTokenRefresh () {
@@ -35,29 +32,24 @@ export default function (ctx, inject) {
     //   }
     // }
 
-    // // eslint-disable-next-line class-methods-use-this
-    // async sendTokenToServer (token) {
-    //   let deviceId = ctx.app.$auth.$storage.getLocalStorage('deviceId')
-    //   const url = `FcmNotifications/upsertWithWhere?where=${encodeURIComponent(JSON.stringify({ deviceId }))}`
-    //   if (!deviceId) {
-    //     deviceId = util.getUniqueId()
-    //   }
-    //   const data = {
-    //     workshopId: _.get(ctx.app.$auth.$storage.getState('user'), 'defaultWorkshop'),
-    //     userId: _.get(ctx.app.$auth.$storage.getState('user'), 'id'),
-    //     userAccessToken: ctx.app.$auth.getToken('local'),
-    //     deviceId,
-    //     deviceName: navigator.product,
-    //     platform: 'DESKTOP',
-    //     version: navigator.appVersion,
-    //     fcmAccessToken: token
-    //   }
-    //   const [error, response] = await ctx.app.$api.post(url, data)
-    //   if (!error) {
-    //     ctx.app.$auth.$storage.setLocalStorage('deviceId', deviceId)
-    //     ctx.app.$auth.$storage.setLocalStorage('fcmId', response.data.id)
-    //   }
-    // }
+    // eslint-disable-next-line class-methods-use-this
+    async sendTokenToServer (token) {
+      let deviceId = ctx.app.$auth.$storage.getLocalStorage('deviceId')
+      const url = 'Shopkeepers/saveFcmToken'
+      if (!deviceId) {
+        deviceId = ctx.$globals.getUniqueId()
+      }
+      const data = {
+        deviceId,
+        deviceName: navigator.product,
+        fcmAccessToken: token
+      }
+      // eslint-disable-next-line no-unused-vars
+      const [error, response] = await ctx.app.$api.post(url, data)
+      if (!error) {
+        ctx.app.$auth.$storage.setLocalStorage('deviceId', deviceId)
+      }
+    }
 
     // // eslint-disable-next-line class-methods-use-this
     // async deleteTokenFromServer () {
@@ -69,15 +61,15 @@ export default function (ctx, inject) {
     //   }
     // }
 
-    // requestNotificationPerm () {
-    //   this.messaging.requestPermission().then(() => this.messaging.getToken()).then((token) => {
-    //     this.messaging.token = token
-    //     this.sendTokenToServer(token)
-    //   }).catch((err) => {
-    //     // eslint-disable-next-line
-    //     console.log('Error occured:', err);
-    //   })
-    // }
+    saveToken () {
+      Notification.requestPermission().then(() => this.messaging.getToken()).then((token) => {
+        this.messaging.token = token
+        this.sendTokenToServer(token)
+      }).catch((err) => {
+        // eslint-disable-next-line
+        console.warn('Error occured:', err);
+      })
+    }
 
     // removeToken () {
     //   const fcmId = ctx.app.$auth.$storage.getLocalStorage('fcmId')
