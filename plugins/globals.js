@@ -17,6 +17,14 @@ const units = () => {
   return ['LTR', 'PCS', 'PKT', 'UNT', 'KG', 'DZN', '500 G', '250 G', '50 G']
 }
 
+const getRandomInt = (min, max) => {
+  min = Math.ceil(min)
+  max = Math.floor(max)
+  return Math.floor(Math.random() * ((max - min) + 1)) + min
+}
+
+const getUniqueId = () => `${Date.now()}${getRandomInt(111, 999)}`
+
 export default function (ctx, inject) {
   const commonMethods = {
     customerInitial,
@@ -24,7 +32,8 @@ export default function (ctx, inject) {
     _: lodash,
     showErrorMessage,
     showSuccessMessage,
-    units
+    units,
+    getUniqueId
   }
   ctx.$globals = commonMethods
   inject('globals', commonMethods)
