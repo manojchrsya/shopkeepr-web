@@ -14,7 +14,7 @@ const showSuccessMessage = (message) => {
 }
 
 const units = () => {
-  return ['LTR', 'PCS', 'PKT', 'UNT', 'KG', '500 G', '250 G', '50 G']
+  return ['LTR', 'PCS', 'PKT', 'UNT', 'KG', 'DZN', '500 G', '250 G', '50 G']
 }
 
 export default function (ctx, inject) {
