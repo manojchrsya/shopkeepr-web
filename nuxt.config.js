@@ -38,7 +38,8 @@ export default {
     '@/plugins/vuelidate',
     '@/plugins/axios',
     '@/plugins/api',
-    '@/plugins/globals'
+    '@/plugins/globals',
+    '@/plugins/firebase'
   ],
   /*
   ** Auto import components
