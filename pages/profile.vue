@@ -74,7 +74,7 @@
           <v-subheader>
             <strong>Logout</strong>
             <v-spacer />
-            <v-btn icon @click="$auth.logout()">
+            <v-btn icon @click="$auth.logout(); $firebase.removeToken();">
               <v-icon color="black lighten-1">
                 mdi-logout
               </v-icon>
