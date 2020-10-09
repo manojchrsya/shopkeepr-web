@@ -7,32 +7,17 @@ export default function (ctx, inject) {
     constructor () {
       firebase.initializeApp(fcmConfig)
       this.messaging = firebase.messaging()
-      // this.messaging.usePublicVapidKey(process.env.firebaseVapidKey)
-      // this.messaging.onTokenRefresh(this.onTokenRefresh)
-      // this.messaging.onMessage(this.onMessage)
-      // this.saveToken()
+      this.messaging.onMessage(this.onMessage)
     }
 
-    // onTokenRefresh () {
-    //   this.messaging.getToken().then((refreshedToken) => {
-    //     this.messaging.token = refreshedToken
-    //     this.sendTokenToServer(refreshedToken)
-    //   }).catch((err) => {
-    //     // eslint-disable-next-line
-    //     console.log('Unable to receive refreshedToken:', err);
-    //   })
-    // }
+    onMessage (payload) {
+      const notification = new Notification(payload.notification.title, { body: payload.notification.body, icon: '/icon.ico' })
+      notification.onclick = (event) => {
+        event.preventDefault()
+        return false
+      }
+    }
 
-    // // eslint-disable-next-line class-methods-use-this
-    // onMessage (payload) {
-    //   const notification = new Notification(payload.data.title, { body: payload.data.body, icon: '/dearo.png', tag: 'dearo-notify' })
-    //   notification.onclick = (event) => {
-    //     event.preventDefault()
-    //     window.open(payload.data.screen, '_blank')
-    //   }
-    // }
-
-    // eslint-disable-next-line class-methods-use-this
     async sendTokenToServer (token) {
       let deviceId = ctx.app.$auth.$storage.getLocalStorage('deviceId')
       const url = 'Shopkeepers/saveFcmToken'
@@ -51,15 +36,17 @@ export default function (ctx, inject) {
       }
     }
 
-    // // eslint-disable-next-line class-methods-use-this
-    // async deleteTokenFromServer () {
-    //   const fcmId = ctx.app.$auth.$storage.getLocalStorage('fcmId')
-    //   const url = `FcmNotifications/${fcmId}`
-    //   if (fcmId) {
-    //     await ctx.app.$axios.delete(url)
-    //     ctx.app.$auth.$storage.setLocalStorage('fcmId', '')
-    //   }
-    // }
+    async removeToken () {
+      const deviceId = ctx.app.$auth.$storage.getLocalStorage('deviceId')
+      const url = `ShopKeepers/removeFcmToken/${deviceId}`
+      if (deviceId) {
+        // eslint-disable-next-line no-unused-vars
+        const [error, response] = await ctx.app.$axios.delete(url)
+        if (!error) {
+          ctx.app.$auth.$storage.setLocalStorage('deviceId', '')
+        }
+      }
+    }
 
     saveToken () {
       Notification.requestPermission().then(() => this.messaging.getToken()).then((token) => {
@@ -70,15 +57,6 @@ export default function (ctx, inject) {
         console.warn('Error occured:', err);
       })
     }
-
-    // removeToken () {
-    //   const fcmId = ctx.app.$auth.$storage.getLocalStorage('fcmId')
-    //   if (fcmId) {
-    //     // eslint-disable-next-line no-console
-    //     this.messaging.deleteToken(this.messaging.token).catch(console.log)
-    //     this.deleteTokenFromServer()
-    //   }
-    // }
   }
 
   const firebaseClient = new Firebase()

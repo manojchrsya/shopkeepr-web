@@ -8,7 +8,7 @@
           </v-list-item-title>
         </v-list-item-content>
         <v-list-item-action>
-          <v-btn icon color="tranparent" @click.prevent="$auth.logout()">
+          <v-btn icon color="tranparent" @click.prevent="$auth.logout(); $firebase.removeToken()">
             <v-icon color="white lighten-1">mdi-logout</v-icon>
           </v-btn>
           <v-list-item-action-text color="white font-weight-bold">Logout</v-list-item-action-text>
@@ -18,7 +18,7 @@
     <v-toolbar v-else color="cyan">
       <v-card-title v-text="title" />
       <v-spacer />
-      <v-btn icon color="tranparent" @click.prevent="$auth.logout()">
+      <v-btn icon color="tranparent" @click.prevent="$auth.logout(); $firebase.removeToken();">
         <v-icon color="white lighten-1">mdi-logout</v-icon>
       </v-btn>
     </v-toolbar>
