@@ -77,6 +77,7 @@ export default {
     })
     // eslint-disable-next-line nuxt/no-globals-in-created
     window.getApp = this
+    this.$firebase.saveToken()
   }
 }
 </script>
