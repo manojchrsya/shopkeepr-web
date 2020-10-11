@@ -25,11 +25,9 @@ messaging.setBackgroundMessageHandler(function (payload) {
   // eslint-disable-next-line no-console
   console.log('[firebase-messaging-sw.js] Received background message ', payload)
   // Customize notification here
-  const notificationTitle = 'Background Message Title'
-  const notificationOptions = {
-    body: 'Background Message body.',
-    icon: '/icon.png'
+  const options = {
+    body: payload.notification.body,
+    icon: '/icon.ico'
   }
-
-  return self.registration.showNotification(notificationTitle, notificationOptions)
+  return self.registration.showNotification(payload.notification.title, options)
 })
