@@ -11,11 +11,9 @@ export default function (ctx, inject) {
     }
 
     onMessage (payload) {
-      const notification = new Notification(payload.notification.title, { body: payload.notification.body, icon: '/icon.ico' })
-      notification.onclick = (event) => {
-        event.preventDefault()
-        return false
-      }
+      navigator.serviceWorker.getRegistration('/firebase-cloud-messaging-push-scope').then((registration) => {
+        registration.showNotification(payload.notification.title, { body: payload.notification.body, icon: '/icon.ico' })
+      })
     }
 
     async sendTokenToServer (token) {
