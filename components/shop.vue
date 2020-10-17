@@ -87,20 +87,17 @@ export default {
   },
   methods: {
     installApp () {
-      // eslint-disable-next-line no-console
-      // window.addToHomescreen()
-      // this.deferredPrompt.prompt()
-      // // Wait for the user to respond to the prompt
-      // this.deferredPrompt.userChoice.then((choiceResult) => {
-      //   if (choiceResult.outcome === 'accepted') {
-      //     // eslint-disable-next-line no-console
-      //     console.log('User accepted the A2HS prompt')
-      //   } else {
-      //     // eslint-disable-next-line no-console
-      //     console.log('User dismissed the A2HS prompt')
-      //   }
-      //   this.deferredPrompt = null
-      // })
+      window.deferredPrompt.prompt()
+      // Wait for the user to respond to the prompt
+      window.deferredPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === 'accepted') {
+          // eslint-disable-next-line no-console
+          console.log('User accepted the A2HS prompt')
+        } else {
+          // eslint-disable-next-line no-console
+          console.log('User dismissed the A2HS prompt')
+        }
+      })
     }
   }
 }
