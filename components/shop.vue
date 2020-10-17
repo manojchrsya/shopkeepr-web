@@ -42,6 +42,11 @@
         <span>Orders</span>
         <v-icon>mdi-clipboard-text-multiple</v-icon>
       </v-btn>
+      <v-spacer />
+      <v-btn @click="installApp">
+        <span>Install</span>
+        <v-icon>mdi-cloud-download</v-icon>
+      </v-btn>
     </v-bottom-navigation>
   </v-flex>
 </template>
@@ -56,6 +61,9 @@ export default {
       default: () => {}
     }
   },
+  data: () => ({
+    deferredPrompt: null
+  }),
   computed: {
     getMobileNo () {
       return `tel:${this.business.mobile}`
@@ -73,6 +81,36 @@ export default {
     isShopKeeper () {
       const role = this.$auth && this.$auth.user && _.first(_.map(this.$auth.user.roles, 'name'))
       return role === '$sk-admin'
+    }
+  },
+  created () {
+    // eslint-disable-next-line nuxt/no-globals-in-created
+    window.addEventListener('beforeinstallprompt', (event) => {
+      event.preventDefault()
+      this.deferredPrompt = event
+      // eslint-disable-next-line
+      console.log(event);
+      return event
+    })
+    // eslint-disable-next-line
+    console.log('createdddd')
+  },
+  methods: {
+    installApp () {
+      // eslint-disable-next-line no-console
+      console.log(this.deferredPrompt)
+      this.deferredPrompt.prompt()
+      // Wait for the user to respond to the prompt
+      this.deferredPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === 'accepted') {
+          // eslint-disable-next-line no-console
+          console.log('User accepted the A2HS prompt')
+        } else {
+          // eslint-disable-next-line no-console
+          console.log('User dismissed the A2HS prompt')
+        }
+        this.deferredPrompt = null
+      })
     }
   }
 }

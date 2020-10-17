@@ -5,9 +5,14 @@ const fcmConfig = require('@/fcm.config.js')
 export default function (ctx, inject) {
   class Firebase {
     constructor () {
-      firebase.initializeApp(fcmConfig)
-      this.messaging = firebase.messaging()
-      this.messaging.onMessage(this.onMessage)
+      try {
+        firebase.initializeApp(fcmConfig)
+        this.messaging = firebase.messaging()
+        this.messaging.onMessage(this.onMessage)
+      } catch (error) {
+        // eslint-disable-next-line
+        console.warn(error.message)
+      }
     }
 
     onMessage (payload) {
@@ -47,13 +52,15 @@ export default function (ctx, inject) {
     }
 
     saveToken () {
-      Notification.requestPermission().then(() => this.messaging.getToken()).then((token) => {
-        this.messaging.token = token
-        this.sendTokenToServer(token)
-      }).catch((err) => {
-        // eslint-disable-next-line
-        console.warn('Error occured:', err);
-      })
+      if (this.messaging) {
+        Notification.requestPermission().then(() => this.messaging.getToken()).then((token) => {
+          this.messaging.token = token
+          this.sendTokenToServer(token)
+        }).catch((err) => {
+          // eslint-disable-next-line
+          console.warn('Error occured:', err);
+        })
+      }
     }
   }
 
