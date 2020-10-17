@@ -9,7 +9,7 @@ export default async function (ctx, inject) {
         try {
           firebase.initializeApp(fcmConfig)
           this.messaging = firebase.messaging()
-          this.swRegistration = await this.getRegistration()
+          this.swRegistration = await this.getRegistration({ path: '/firebase-messaging-sw.js', scope: '/' })
           this.installer()
           this.messaging.onMessage(this.onMessage)
           return this
@@ -21,8 +21,10 @@ export default async function (ctx, inject) {
       })()
     }
 
-    getRegistration () {
-      return navigator.serviceWorker.getRegistration('/firebase-messaging-sw.js', { scope: '/products/' })
+    getRegistration (options) {
+      // eslint-disable-next-line
+      console.log(options);
+      return navigator.serviceWorker.getRegistration(options.path, { scope: options.scope })
     }
 
     onMessage (payload) {
