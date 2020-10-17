@@ -31,3 +31,8 @@ messaging.setBackgroundMessageHandler(function (payload) {
   }
   return self.registration.showNotification(payload.notification.title, options)
 })
+
+self.addEventListener('fetch', () => {
+  // eslint-disable-next-line no-console
+  console.log('fetch')
+})

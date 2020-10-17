@@ -78,6 +78,25 @@ export default {
     // eslint-disable-next-line nuxt/no-globals-in-created
     window.getApp = this
     this.$firebase.saveToken()
+    // if ('serviceWorker' in navigator) {
+    //   navigator.serviceWorker.register('/firebase-messaging-sw.js').then(function (registration) {
+    //     // eslint-disable-next-line
+    //     console.log('SW registration succeeded with scope:', registration.scope)
+    //   }).catch(function (e) {
+    //     // eslint-disable-next-line
+    //     console.log('SW registration failed with error:', e)
+    //   })
+    // }
+    // // eslint-disable-next-line nuxt/no-globals-in-created
+    // window.addEventListener('beforeinstallprompt', (event) => {
+    //   // eslint-disable-next-line
+    //   console.log('👍', 'beforeinstallprompt', event)
+    //   // Stash the event so it can be triggered later.
+    //   // eslint-disable-next-line nuxt/no-globals-in-created
+    //   window.deferredPrompt = event
+    //   // Remove the 'hidden' class from the install button container
+    //   // divInstall.classList.toggle('hidden', false)
+    // })
   }
 }
 </script>
