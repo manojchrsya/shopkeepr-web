@@ -63,9 +63,6 @@ export default {
       default: () => {}
     }
   },
-  data: () => ({
-    deferredPrompt: null
-  }),
   computed: {
     getMobileNo () {
       return `tel:${this.business.mobile}`
@@ -87,17 +84,19 @@ export default {
   },
   methods: {
     installApp () {
-      window.deferredPrompt.prompt()
-      // Wait for the user to respond to the prompt
-      window.deferredPrompt.userChoice.then((choiceResult) => {
-        if (choiceResult.outcome === 'accepted') {
-          // eslint-disable-next-line no-console
-          console.log('User accepted the A2HS prompt')
-        } else {
-          // eslint-disable-next-line no-console
-          console.log('User dismissed the A2HS prompt')
-        }
-      })
+      if (window.deferredPrompt) {
+        window.deferredPrompt.prompt()
+        // Wait for the user to respond to the prompt
+        window.deferredPrompt.userChoice.then((choiceResult) => {
+          if (choiceResult.outcome === 'accepted') {
+            // eslint-disable-next-line no-console
+            console.log('User accepted the A2HS prompt')
+          } else {
+            // eslint-disable-next-line no-console
+            console.log('User dismissed the A2HS prompt')
+          }
+        })
+      }
     }
   }
 }
