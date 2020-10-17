@@ -2,24 +2,31 @@ import * as firebase from 'firebase/app'
 import 'firebase/messaging'
 const fcmConfig = require('@/fcm.config.js')
 
-export default function (ctx, inject) {
+export default async function (ctx, inject) {
   class Firebase {
     constructor () {
-      try {
-        firebase.initializeApp(fcmConfig)
-        this.messaging = firebase.messaging()
-        this.messaging.onMessage(this.onMessage)
-        this.installer()
-      } catch (error) {
-        // eslint-disable-next-line
-        console.warn(error.message)
-      }
+      return (async () => {
+        try {
+          firebase.initializeApp(fcmConfig)
+          this.messaging = firebase.messaging()
+          this.swRegistration = await this.getRegistration()
+          this.installer()
+          this.messaging.onMessage(this.onMessage)
+          return this
+        } catch (error) {
+          // eslint-disable-next-line
+          console.warn(error.message)
+          return this
+        }
+      })()
+    }
+
+    getRegistration () {
+      return navigator.serviceWorker.getRegistration('/firebase-messaging-sw.js', { scope: '/products/' })
     }
 
     onMessage (payload) {
-      navigator.serviceWorker.getRegistration('/firebase-messaging-sw.js').then((registration) => {
-        return registration.showNotification(payload.notification.title, { body: payload.notification.body, icon: '/icon.ico' })
-      })
+      return this.swRegistration.showNotification(payload.notification.title, { body: payload.notification.body, icon: '/icon.ico' })
     }
 
     async sendTokenToServer (token) {
@@ -65,6 +72,7 @@ export default function (ctx, inject) {
     }
 
     installer () {
+      // eslint-disable-next-line
       window.addEventListener('beforeinstallprompt', (event) => {
         // eslint-disable-next-line
         console.log('👍', 'beforeinstallprompt', event);
@@ -76,7 +84,7 @@ export default function (ctx, inject) {
     }
   }
 
-  const firebaseClient = new Firebase()
+  const firebaseClient = await new Firebase()
   ctx.$firebase = firebaseClient
   inject('firebase', firebaseClient)
 }
