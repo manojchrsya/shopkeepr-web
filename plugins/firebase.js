@@ -9,6 +9,7 @@ export default function (ctx, inject) {
         firebase.initializeApp(fcmConfig)
         this.messaging = firebase.messaging()
         this.messaging.onMessage(this.onMessage)
+        this.installer()
       } catch (error) {
         // eslint-disable-next-line
         console.warn(error.message)
@@ -61,6 +62,17 @@ export default function (ctx, inject) {
           console.warn('Error occured:', err);
         })
       }
+    }
+
+    installer () {
+      window.addEventListener('beforeinstallprompt', (event) => {
+        // eslint-disable-next-line
+        console.log('👍', 'beforeinstallprompt', event);
+        // Stash the event so it can be triggered later.
+        window.deferredPrompt = event
+        // Remove the 'hidden' class from the install button container
+        // divInstall.classList.toggle('hidden', false);
+      })
     }
   }
 
