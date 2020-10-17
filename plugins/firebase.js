@@ -9,7 +9,7 @@ export default async function (ctx, inject) {
         try {
           firebase.initializeApp(fcmConfig)
           this.messaging = firebase.messaging()
-          this.swRegistration = await this.getRegistration({ path: '/firebase-messaging-sw.js', scope: '/' })
+          this.swRegistration = await this.getRegistration({ path: '/firebase-messaging-sw.js', scope: '/products/' })
           this.installer()
           this.messaging.onMessage(this.onMessage)
           return this
