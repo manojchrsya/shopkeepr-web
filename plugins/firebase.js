@@ -17,7 +17,7 @@ export default function (ctx, inject) {
     }
 
     onMessage (payload) {
-      navigator.serviceWorker.getRegistration('/firebase-messaging-sw.js', { scope: '/products/' }).then((registration) => {
+      navigator.serviceWorker.getRegistration('/firebase-messaging-sw.js').then((registration) => {
         return registration.showNotification(payload.notification.title, { body: payload.notification.body, icon: '/icon.ico' })
       })
     }
