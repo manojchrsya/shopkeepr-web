@@ -4,12 +4,12 @@
   "description": "manage day to day transaction as well as products to sell online and received order from customer",
   "icons": [
     {
-      "src": "icon.png",
+      "src": "icons/192x192.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "icon.png",
+      "src": "icons/512x512.png",
       "type": "image/png",
       "sizes": "512x512"
     }
