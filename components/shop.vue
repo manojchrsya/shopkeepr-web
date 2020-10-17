@@ -53,6 +53,8 @@
 
 <script>
 const _ = require('lodash')
+// eslint-disable-next-line no-unused-vars
+// const install = require('add-to-homescreen')
 
 export default {
   props: {
@@ -83,34 +85,22 @@ export default {
       return role === '$sk-admin'
     }
   },
-  created () {
-    // eslint-disable-next-line nuxt/no-globals-in-created
-    window.addEventListener('beforeinstallprompt', (event) => {
-      event.preventDefault()
-      this.deferredPrompt = event
-      // eslint-disable-next-line
-      console.log(event);
-      return event
-    })
-    // eslint-disable-next-line
-    console.log('createdddd')
-  },
   methods: {
     installApp () {
       // eslint-disable-next-line no-console
-      console.log(this.deferredPrompt)
-      this.deferredPrompt.prompt()
-      // Wait for the user to respond to the prompt
-      this.deferredPrompt.userChoice.then((choiceResult) => {
-        if (choiceResult.outcome === 'accepted') {
-          // eslint-disable-next-line no-console
-          console.log('User accepted the A2HS prompt')
-        } else {
-          // eslint-disable-next-line no-console
-          console.log('User dismissed the A2HS prompt')
-        }
-        this.deferredPrompt = null
-      })
+      // window.addToHomescreen()
+      // this.deferredPrompt.prompt()
+      // // Wait for the user to respond to the prompt
+      // this.deferredPrompt.userChoice.then((choiceResult) => {
+      //   if (choiceResult.outcome === 'accepted') {
+      //     // eslint-disable-next-line no-console
+      //     console.log('User accepted the A2HS prompt')
+      //   } else {
+      //     // eslint-disable-next-line no-console
+      //     console.log('User dismissed the A2HS prompt')
+      //   }
+      //   this.deferredPrompt = null
+      // })
     }
   }
 }
