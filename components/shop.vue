@@ -42,11 +42,11 @@
         <span>Orders</span>
         <v-icon>mdi-clipboard-text-multiple</v-icon>
       </v-btn>
-      <v-spacer />
+      <!-- <v-spacer />
       <v-btn @click="installApp">
         <span>Install</span>
         <v-icon>mdi-cloud-download</v-icon>
-      </v-btn>
+      </v-btn> -->
     </v-bottom-navigation>
   </v-flex>
 </template>
